@@ -58,7 +58,6 @@ public class Monkey {
             throwCooldownRemaining++;
             return;
         }
-        System.out.println("Throwing projectile");
 
         Object[] results = bloonsInRange(allBloons);
         List<Bloon> inRange = (List<Bloon>) results[0];

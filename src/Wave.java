@@ -23,8 +23,11 @@ public class Wave {
 
         int waited = 0;
         boolean separate = false;
-        for (String line : info.split("\n")) {
+        System.out.println(info);
+        for (String line : info.replaceAll("\n", "").split(";")) {
             String[] args = line.split(" ");
+            for(String arg:args) System.out.print("'" + arg + "', ");
+            System.out.println();
             char type = args[0].charAt(0);
             if (type == 'B') {
                 int hp = Integer.valueOf(args[1]);

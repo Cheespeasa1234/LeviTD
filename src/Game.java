@@ -51,10 +51,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         for (Monkey monkey : monkeys) {
             monkey.throwProjectile(currentWave.bloons);
         }
-
-        if (currentWave.getBloonsRemaining() == 0) {
-            System.out.println("WAVE OVER!!!!!!!");
-        }
         
         for (int i = 0; i < currentWave.getBloonsRemaining(); i++) {
             Bloon bloon = currentWave.bloons.get(i);
@@ -101,9 +97,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
             e.printStackTrace();
         }
 
-        String[] waves = content.split("\nEND\n");
+        String[] waves = content.split("END");
         wave1 = new Wave(waves[0], curRoute[0]);
-        wave2 = new Wave(waves[1], curRoute[0]);
         currentWave = wave1;
     }
 
