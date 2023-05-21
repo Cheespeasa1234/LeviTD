@@ -56,4 +56,8 @@ public class Wave {
         this.onFinish = r;
     }
 
+    public int getBloonsRemaining() {
+        return this.bloons.size();
+    }
+
 }

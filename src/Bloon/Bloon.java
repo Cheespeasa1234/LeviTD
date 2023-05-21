@@ -9,6 +9,7 @@ public class Bloon {
     // we can compromise, right?
     public int hp;
     public int distTravelled;
+    public boolean detected = false;
     public Point2D loc;
     public BloonInfo bloonInfo;
 
@@ -25,6 +26,12 @@ public class Bloon {
             put(3, new BloonInfo(Color.GREEN, 1, 5));
         }
     };
+
+    public void dealDamage(int hp) {
+        this.hp -= hp;
+        if (this.hp > 0)
+            this.bloonInfo = healthToInfoMap.get(this.hp);
+    }
 
     public Bloon(int hp, Point2D start) {
         this.loc = start;

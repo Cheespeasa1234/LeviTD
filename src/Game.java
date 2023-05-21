@@ -38,18 +38,35 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
 
     boolean switchRoute = false;
 
-    public static Point2D[] curRoute = Geometry.route1;
+    private static Point2D[] curRoute = Geometry.route1;
+    private Point2D mouseLoc;
 
-    Wave wave1, wave2;
-    Wave currentWave;
+    private Wave wave1, wave2;
+    private Wave currentWave;
+    private List<Monkey> monkeys;
 
     private Timer timer = new Timer(1000 / 30, e -> {
         repaint();
-        for (Bloon bloon : currentWave.bloons) {
+        
+        for (Monkey monkey : monkeys) {
+            monkey.throwProjectile(currentWave.bloons);
+        }
+
+        if (currentWave.getBloonsRemaining() == 0) {
+            System.out.println("WAVE OVER!!!!!!!");
+        }
+        
+        for (int i = 0; i < currentWave.getBloonsRemaining(); i++) {
+            Bloon bloon = currentWave.bloons.get(i);
+            // if dead:
+            if (bloon.hp <= 0) {
+                currentWave.bloons.remove(bloon);
+            }
             bloon.distTravelled += bloon.bloonInfo.speed;
             Point2D newLoc = travel(curRoute, bloon.distTravelled);
             bloon.loc = newLoc;
         }
+
     });
 
     public static Point2D travel(Point2D[] route, int distanceToTravel) {
@@ -75,7 +92,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         return route[route.length - 1];
     }
 
-    private void loadWave(String loc) {
+    private void loadWaves(String loc) {
         File waveLocation = new File(loc);
         String content = "";
         try {
@@ -98,8 +115,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         this.addKeyListener(this);
         timer.start();
 
-        loadWave("src/easy_mode.levitd");
-
+        loadWaves("src/easy_mode.levitd");
+        monkeys = new ArrayList<Monkey>();
     }
 
     public void paintComponent(Graphics g) {
@@ -122,51 +139,66 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         for (Bloon bloon : currentWave.bloons) {
 
             // bloon color
-            g2.setColor(bloon.bloonInfo.c);
+            if(bloon.detected) {
+                g2.setColor(bloon.bloonInfo.c.darker());
+            } else {
+                g2.setColor(bloon.bloonInfo.c.brighter());
+            }
             g2.fillOval((int) bloon.getX(), (int) bloon.getY(), bloon.getSize() * 16, bloon.getSize() * 20);
             g2.fillPolygon(
-                Geometry.castArray(
-                    Geometry.transform(
-                        Geometry.triangleXVals,
-                        triangleXScaleRemoveThisEventually,
-                        bloon.getX() + xOffsetRemoveThisAlsoAtSomePointInTime)),
-                Geometry.castArray(
-                    Geometry.transform(
-                        Geometry.triangleYVals,
-                        triangleYScaleIWillGetRidOfThisAsWell,
-                        bloon.getY() + yOffsetIShouldStopDoingTheseVariableNames)),
-                3
-            );
+                    Geometry.castArray(
+                            Geometry.transform(
+                                    Geometry.triangleXVals,
+                                    triangleXScaleRemoveThisEventually,
+                                    bloon.getX() + xOffsetRemoveThisAlsoAtSomePointInTime)),
+                    Geometry.castArray(
+                            Geometry.transform(
+                                    Geometry.triangleYVals,
+                                    triangleYScaleIWillGetRidOfThisAsWell,
+                                    bloon.getY() + yOffsetIShouldStopDoingTheseVariableNames)),
+                    3);
 
             // bloon outline
             g2.setColor(Color.BLACK);
             g2.drawOval((int) bloon.getX(), (int) bloon.getY(), bloon.getSize() * 16, bloon.getSize() * 20);
             g2.drawPolygon(
-                Geometry.castArray(
-                    Geometry.transform(
-                        Geometry.triangleXVals,
-                        triangleXScaleRemoveThisEventually,
-                        bloon.getX() + xOffsetRemoveThisAlsoAtSomePointInTime)),
-                Geometry.castArray(
-                    Geometry.transform(
-                        Geometry.triangleYVals,
-                        triangleYScaleIWillGetRidOfThisAsWell,
-                        bloon.getY() + yOffsetIShouldStopDoingTheseVariableNames)),
-                3
-            );
+                    Geometry.castArray(
+                            Geometry.transform(
+                                    Geometry.triangleXVals,
+                                    triangleXScaleRemoveThisEventually,
+                                    bloon.getX() + xOffsetRemoveThisAlsoAtSomePointInTime)),
+                    Geometry.castArray(
+                            Geometry.transform(
+                                    Geometry.triangleYVals,
+                                    triangleYScaleIWillGetRidOfThisAsWell,
+                                    bloon.getY() + yOffsetIShouldStopDoingTheseVariableNames)),
+                    3);
             //
             g2.drawString(bloon.distTravelled + "px", (int) bloon.loc.getX(), (int) bloon.loc.getY());
+            bloon.detected = false;
+        }
+
+        for (Monkey monkey : monkeys) {
+            g2.setColor(new Color(120, 70, 70));
+            g2.fillOval((int) (monkey.x - monkey.size / 2),
+                    (int) (monkey.y - monkey.size / 2), (int) monkey.size, (int) monkey.size);
+            // g2.setColor(new Color(255, 0, 0, 100));
+            // g2.fillOval((int) (monkey.x - monkey.range),
+            //         (int) (monkey.y - monkey.range), (int) monkey.range * 2, (int) monkey.range * 2);
+            g2.setColor(Color.BLACK);
+            g2.drawString(monkey.throwCooldownRemaining + " / " + monkey.throwCooldown, monkey.x, monkey.y);
+            g2.drawString("AimType." + monkey.aim, monkey.x, monkey.y - 20);
         }
 
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        switchRoute = !switchRoute;
-        if (switchRoute)
-            curRoute = Geometry.route2;
-        else
-            curRoute = Geometry.route1;
+        int key = e.getKeyCode();
+        if (key == KeyEvent.VK_M) {
+            System.out.println("Monkey spawned.");
+            monkeys.add(new Monkey((int) mouseLoc.getX(), (int) mouseLoc.getY()));
+        }
     }
 
     @Override
@@ -183,6 +215,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        mouseLoc = e.getPoint();
     }
 
     @Override
