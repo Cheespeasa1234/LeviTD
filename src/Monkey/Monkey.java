@@ -92,4 +92,8 @@ public class Monkey {
         }
     }
 
+    public int imageSize() {
+        return this.img.getWidth(null) / 2;
+    }
+
 }

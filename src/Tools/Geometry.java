@@ -136,19 +136,19 @@ public class Geometry {
     }
 
     public static boolean intersectsPath(Point2D[] path, Point2D point, int radius) {
-    // for every line in the path
-    for(int i = 0; i < path.length - 1; i++) {
-        // calculate the distance between the center of the circle and the line segment
-        double distance = Line2D.ptSegDist(path[i].getX(), path[i].getY(), path[i + 1].getX(), path[i + 1].getY(), point.getX(), point.getY());
-        
-        // if the distance is less than or equal to the radius of the circle, then the circle intersects the line segment
-        if(distance <= radius) {
-            return true;
+        // for every line in the path
+        for(int i = 0; i < path.length - 1; i++) {
+            // calculate the distance between the center of the circle and the line segment
+            double distance = Line2D.ptSegDist(path[i].getX(), path[i].getY(), path[i + 1].getX(), path[i + 1].getY(), point.getX(), point.getY());
+            
+            // if the distance is less than or equal to the radius of the circle, then the circle intersects the line segment
+            if(distance <= radius) {
+                return true;
+            }
         }
+        
+        // if the circle does not intersect any of the line segments, return false
+        return false;
     }
-    
-    // if the circle does not intersect any of the line segments, return false
-    return false;
-}
 
 }

@@ -6,7 +6,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import java.util.HashMap;
 
 import lib.*;
 public class GameUI extends JPanel {
@@ -21,10 +20,14 @@ public class GameUI extends JPanel {
         // add dart monkey to the picker
         JButton dartMonkey = new JButton();
         dartMonkey.setText("M" + Resources.intResources.get("monkey.dart.stats.default.price"));
-        dartMonkey.addChangeListener(e->{
-            System.out.println("Dart Monkey clicked");
+        dartMonkey.setIcon(new ImageIcon(Resources.imageResources.get("monkeys.dart.images.displayico")));
+        
+        // on click
+        dartMonkey.addActionListener(e -> {
+            Game.monkeyToPlace = new DartMonkey(0, 0);
         });
 
+        monkeyPicker.add(dartMonkey);
         this.add(monkeyPicker);
 
         JPanel timeCtrls = new JPanel();
