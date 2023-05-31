@@ -1,11 +1,13 @@
 package Bloon;
 import java.awt.Color;
+import java.awt.Image;
 public class BloonInfo {
-    public Color c;
+    public Image img;
     public int size, speed;
-    public BloonInfo(Color c, int size, int speed) {
-        this.c = c;
-        this.size = size;
+    public BloonInfo(Image img, int speed) {
+        this.img = img;
+        // set size to image radius
+        this.size = img.getWidth(null) / 2;
         this.speed = speed;
     }
 }

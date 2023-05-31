@@ -27,11 +27,12 @@ public class Compressor {
         new Point2D.Double(665.0, 500.0), new Point2D.Double(642.0, 500.0), new Point2D.Double(0.0, 500.0)
     };
     public static void main(String[] args) {
-        float scale = 0.9f;
+        
         for(int i = 0; i < route.length; i++) {
-            double newX = route[i].getX() * scale;
-            route[i].setLocation(Math.floor(newX), route[i].getY());
-            System.out.println("new Point2D.Double("+ route[i].getX() + ", " + route[i].getY() +"), ");
+            double newX = route[i].getX() * 1.5;
+            double newY = route[i].getY() * 1.8;
+            route[i].setLocation(Math.floor(newX), Math.floor(newY));
+            System.out.print("new Point2D.Double("+ route[i].getX() + ", " + route[i].getY() +"), ");
         }
     }
 }

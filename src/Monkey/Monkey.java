@@ -2,36 +2,36 @@ package Monkey;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.geom.Point2D;
+import java.awt.Image;
 
 import Bloon.*;
 import Tools.*;
+import Projectile.*;
 
 public class Monkey {
     
-    public int x, y;
-    public double size;
+    public Point2D pos;
 
     //stats
-    public int throwSpeed; // how fast projectile moves
-    public int throwCooldown; // how fast to throw projectiles
+    public int throwSpeed, throwCooldown; // speed of a proj, throw frequency
     public int throwCooldownRemaining = 0;
-    public int throwCount; // how many projectiles thrown at once
-    public int throwPierce; // how many bloons it will go through
-    public int throwDamage; // how many bloon layers it can pop at once
-    public AimType aim = AimType.FIRST;
+    public int throwCount, throwPierce, throwDamage; // projs at once, bloons at once, layers at once
     public double range;
+    
+    public Image img;
+    public float lastThrownRot;
 
-    public Monkey(int x, int y) {
-        this.x = x;
-        this.y = y;
-        this.size = 20;
-        this.throwSpeed = 1;
-        this.throwCooldown = 20;
-        this.throwCooldownRemaining = throwCooldown;
-        this.throwCount = 1;
-        this.throwPierce = 1;
-        this.throwDamage = 1;
-        this.range = 100;
+    public AimType aim;
+    public List<Projectile> projectiles;
+
+    public double getX() { return pos.getX(); }
+    public double getY() { return pos.getY(); }
+
+    protected Monkey(int x, int y) {
+        this.pos = new Point2D.Double((double) x, (double) y);
+        this.projectiles = new ArrayList<Projectile>();
+        this.aim = AimType.FIRST;
     }
 
 
@@ -40,8 +40,8 @@ public class Monkey {
         List<Float> distances = new ArrayList<Float>();
         for(Bloon bloon : allBloons) {
             // find the distance
-            double dx = Math.pow(bloon.getX() - x, 2);
-            double dy = Math.pow(bloon.getY() - y, 2);
+            double dx = Math.pow(bloon.getX() - getX(), 2);
+            double dy = Math.pow(bloon.getY() - getY(), 2);
             double dist = Math.sqrt(dx + dy);
             if(dist <= range) {
                 inRange.add(bloon);
@@ -74,12 +74,22 @@ public class Monkey {
             } else if(aim == AimType.FIRST && bestMatchValue < inRange.get(i).distTravelled && inRange.get(i).hp > 0) {
                 bestMatchBloon = inRange.get(i);
                 bestMatchValue = bestMatchBloon.distTravelled;
+            } else if(aim == AimType.LAST && bestMatchValue > inRange.get(i).distTravelled && inRange.get(i).hp > 0) {
+                bestMatchBloon = inRange.get(i);
+                bestMatchValue = bestMatchBloon.distTravelled;
             }
         }
 
-        bestMatchBloon.dealDamage(this.throwDamage);
         this.throwCooldownRemaining = 0;
-        
+        Projectile thrown = new Projectile(getX(), getY(), bestMatchBloon, 0.0, throwSpeed, throwDamage, throwPierce);
+        this.lastThrownRot = (float) Math.atan2(bestMatchBloon.getY() - getY(), bestMatchBloon.getX() - getX()) + (float) Math.PI / 2;
+        projectiles.add(thrown);
+        for(int i = 0; i < projectiles.size(); i++) {
+            if(projectiles.get(i).popsRemaining < 1) {
+                projectiles.remove(i);
+                i--;
+            }
+        }
     }
 
 }

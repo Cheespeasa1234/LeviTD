@@ -14,14 +14,21 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import java.awt.geom.Point2D;
 import java.awt.BasicStroke;
+import java.awt.Toolkit;
+import java.awt.Image;
+import javax.swing.ImageIcon;
+import java.awt.List;
+import java.awt.geom.Point2D;
 
 public class PathMaker extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
 
-    public static final int PREF_W = 800;
-    public static final int PREF_H = 600;
+    static double scale = 1.5;
+    public static final int PREF_W = (int) (1920 / scale);
+    public static final int PREF_H = (int) (1080 / scale);
 
     public ArrayList<Point2D> points = new ArrayList<Point2D>();
-    Point2D mouseloc;
+    public Image bg = new ImageIcon(PathMaker.class.getResource("../img/map1.png")).getImage().getScaledInstance(PREF_W, PREF_H, Image.SCALE_SMOOTH); 
+    Point2D mouseloc = new Point2D.Float(0,0);
 
     public PathMaker() {
         this.setFocusable(true);
@@ -29,12 +36,13 @@ public class PathMaker extends JPanel implements MouseListener, MouseMotionListe
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         this.addKeyListener(this);
+        points.add(new Point2D.Double(0,0));
     }
 
     public void paintComponent(Graphics g) {
-
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+        g2.drawImage(bg, 0, 0, null);
 
         g2.drawLine((int) mouseloc.getX(), (int) mouseloc.getY(), (int) points.get(points.size()-1).getX(), (int) points.get(points.size()-1).getY());
 
