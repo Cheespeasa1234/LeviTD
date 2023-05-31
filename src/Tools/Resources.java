@@ -1,7 +1,9 @@
 package Tools;
 import java.awt.Image;
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.HashMap;
+
 
 import javax.swing.ImageIcon;
 
@@ -23,11 +25,11 @@ img:bloons.green.imgpath:/img/bloons/BTD6Green.png
 str:bloons.green.onpop:blue
 int:bloons.green.speed:6
 
-img:monkeys.dart.images.displayico:/img/monkeys/dartmonkey/dartMonkey.png
-img:monkeys.dart.images.placedico:/img/monkeys/dartmonkey/Dart_Monkey_Mobile.png
+img:monkeys.dart.images.displayicon:/img/monkeys/displayicon/dartMonkey.png
+img:monkeys.dart.images.placedicon:/img/monkeys/placeicon/dartMonkey.png
 
-img:monkeys.super.images.displayico:/img/monkeys/dartmonkey/dartMonkey.png
-img:monkeys.super.images.placedico:/img/monkeys/dartmonkey/Dart_Monkey_Mobile.png
+img:monkeys.super.images.displayicon:/img/monkeys/displayicon/superMonkey.png
+img:monkeys.super.images.placedicon:/img/monkeys/placeicon/superMonkey.png
 
 int:monkeys.dart.stats.default.price:100
 int:monkeys.dart.stats.default.projSpeed:30
@@ -54,11 +56,12 @@ END""";
     }
 
     public int getInt(String path) {
-        System.out.println(root + "." + path);
         return intResources.get(root + "." + path);
     }
-
+    
     public Image getImg(String path) {
+        System.out.println("GETTING: " + root + "." + path);
+        System.out.println(root + "." + path);
         return imageResources.get(root + "." + path);
     }
 
@@ -70,7 +73,11 @@ END""";
                 continue;
             String[] args = line.split(":");
             if (args[0].equals("img")) {
-                imageResources.put(args[1], new ImageIcon(Resources.class.getResource(args[2])).getImage());
+                URL url = Resources.class.getResource(args[2]);
+                // print the url full path
+                System.out.println(url);
+                ImageIcon icon = new ImageIcon(url);
+                imageResources.put(args[1], icon.getImage());
             } else if (args[0].equals("int")) {
                 intResources.put(args[1], Integer.parseInt(args[2]));
             }
