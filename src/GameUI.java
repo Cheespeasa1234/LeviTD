@@ -20,15 +20,14 @@ public class GameUI extends JPanel {
 
         // add dart monkey to the picker
         JButton dartMonkey = new JButton();
-        Resources resources = new Resources();
-        dartMonkey.setText("M" + resources.getImg("monkey.dart.stats.default.price"));
-        dartMonkey.setIcon(new ImageIcon(resources.getImg("monkeys.dart.images.placeicon")));
+        dartMonkey.setText("M" + Resources.intResources.get("monkey.dart.stats.default.price"));
+        dartMonkey.setIcon(new ImageIcon(Resources.imageResources.get("monkeys.dart.images.displayico")));
         dartMonkey.addActionListener(e -> { Game.monkeyToPlace = new DartMonkey(0, 0); });
 
         // add super monkey to the picker
         JButton superMonkey = new JButton();
-        superMonkey.setText("M" + resources.getImg("monkey.super.stats.default.price"));
-        superMonkey.setIcon(new ImageIcon(resources.getImg("monkeys.super.images.placeicon")));
+        superMonkey.setText("M" + Resources.intResources.get("monkey.super.stats.default.price"));
+        superMonkey.setIcon(new ImageIcon(Resources.imageResources.get("monkeys.super.images.displayico")));
         superMonkey.addActionListener(e -> { Game.monkeyToPlace = new SuperMonkey(0, 0); });
 
         monkeyPicker.add(dartMonkey);
