@@ -7,7 +7,8 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import lib.*;
+import Monkey.DartMonkey;
+import Tools.*;
 public class GameUI extends JPanel {
 
     public GameUI() {

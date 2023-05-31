@@ -1,8 +1,8 @@
+package Monkey;
 
 
 import javax.swing.ImageIcon;
-
-import Monkey.Monkey;
+import Tools.Resources;
 
 public class DartMonkey extends Monkey {
 
