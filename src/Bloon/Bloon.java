@@ -48,7 +48,7 @@ public class Bloon {
 
     public void travel(Point2D[] route, int distance) {
         this.distTravelled += distance;
-        Point2D newLoc = calculateTravel(route, distance);
+        Point2D newLoc = calculateTravel(route, this.distTravelled);
         this.loc = newLoc;
     }
 

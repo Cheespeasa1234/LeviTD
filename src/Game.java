@@ -68,7 +68,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         for (int i = 0; i < currentWave.getBloonsRemaining(); i++) {
             Bloon bloon = currentWave.bloons.get(i);
         
-            // if dead or at end of route, remove it
+            // if hp is 0 or if it has travelled the entire path
             if (bloon.hp <= 0 || bloon.distTravelled >= Geometry.pathDistance(curRoute)) {
                 currentWave.bloons.remove(bloon);
             }
