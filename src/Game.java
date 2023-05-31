@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,7 @@ import Tools.Resources;
 
 import java.awt.geom.AffineTransform;
 
-public class Game extends JPanel implements MouseListener, MouseMotionListener {
+public class Game extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
 
     private static double scale = 1.5;
     public static final int PREF_W = (int) (1920 / scale) + 200;
@@ -53,7 +54,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     private List<Monkey> monkeys;
 
     public static Monkey monkeyToPlace;
-    public boolean monkeyOnPath = true;
+    public boolean monkeyCanBePlaced = false;
 
     private void timerFunction() {
         repaint();
@@ -105,6 +106,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         this.setBackground(Color.WHITE);
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
+        this.addKeyListener(this);
         this.setLayout(new BorderLayout());
         timer.start();
 
@@ -155,18 +157,18 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                     (int) mouseLoc.getY() - monkeyToPlace.img.getHeight(this) / 2, this);
             
             // draw range
-            if(monkeyOnPath) {
-                g2.setColor(new Color(255, 0, 0, 50));
-            } else {
+            if(monkeyCanBePlaced) {
                 g2.setColor(new Color(0, 255, 0, 50));
+            } else {
+                g2.setColor(new Color(255, 0, 0, 50));
             }
             g2.fillOval((int) (mouseLoc.getX() - monkeyToPlace.range), (int) (mouseLoc.getY() - monkeyToPlace.range),
             (int) (monkeyToPlace.range * 2), (int) (monkeyToPlace.range * 2));
             
-            if(monkeyOnPath) {
-                g2.setColor(new Color(255, 0, 0));
-            } else {
+            if(monkeyCanBePlaced) {
                 g2.setColor(new Color(0, 255, 0));
+            } else {
+                g2.setColor(new Color(255, 0, 0));
             }
             g2.drawOval((int) (mouseLoc.getX() - monkeyToPlace.range), (int) (mouseLoc.getY() - monkeyToPlace.range),
                     (int) (monkeyToPlace.range * 2), (int) (monkeyToPlace.range * 2));
@@ -174,43 +176,45 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
     }
 
-    @Override
-    public void mouseDragged(MouseEvent e) {
+    private boolean canPlaceMonkey() {
+        boolean intersectsPath = Geometry.intersectsPath(curRoute, mouseLoc, monkeyToPlace.imageSize());
+        boolean intersectsMonkey = false;
+        for (Monkey monkey : monkeys) {
+            if (monkey.pos.distance(mouseLoc) < monkey.imageSize() + monkeyToPlace.imageSize()) {
+                intersectsMonkey = true;
+                break;
+            }
+        }
+        return !intersectsPath && !intersectsMonkey;
     }
 
+    
     @Override
     public void mouseMoved(MouseEvent e) {
         mouseLoc = e.getPoint();
         // set can place to whether or not the monkey is intersecting the path
         if (monkeyToPlace != null) {
-            monkeyOnPath = Geometry.intersectsPath(curRoute, e.getPoint(), monkeyToPlace.imageSize());
+            monkeyCanBePlaced = canPlaceMonkey();
         }
     }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        if (monkeyToPlace != null && !Geometry.intersectsPath(curRoute, e.getPoint(), monkeyToPlace.imageSize())) {
+    @Override public void mouseDragged(MouseEvent e) {}
+    
+    @Override public void mouseClicked(MouseEvent e) {
+        
+        if (monkeyToPlace != null && canPlaceMonkey()) {
             monkeyToPlace.pos = e.getPoint();
             monkeys.add(monkeyToPlace);
             monkeyToPlace = null;
         }
     }
 
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
+    @Override public void mouseEntered(MouseEvent e) {}
 
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
+    @Override public void mouseExited(MouseEvent e) {}
 
-    @Override
-    public void mousePressed(MouseEvent e) {
-    }
+    @Override public void mousePressed(MouseEvent e) {}
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    }
+    @Override public void mouseReleased(MouseEvent e) {}
 
     /* METHODS FOR CREATING JFRAME AND JPANEL */
 
@@ -237,5 +241,16 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
             }
         });
     }
+
+    @Override public void keyTyped(KeyEvent e) {}
+
+    @Override public void keyPressed(KeyEvent e) {
+        // if pressed esc, stop placing monkey
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            monkeyToPlace = null;
+        }
+    }
+
+    @Override public void keyReleased(KeyEvent e) {}
 
 }
