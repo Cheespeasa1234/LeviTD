@@ -1,11 +1,9 @@
 package Projectile;
 
-import java.util.List;
 import java.awt.geom.Point2D;
-import java.io.Serializable;
+import java.util.List;
 
-import Bloon.*;
-import Monkey.*;
+import Bloon.Bloon;
 
 public class Projectile {
     public Point2D pos, movementVector;

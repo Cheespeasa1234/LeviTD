@@ -1,14 +1,10 @@
 package Bloon;
+import java.awt.Image;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
-
-import Tools.Geometry;
-
-import java.awt.Image;
-import java.awt.Color;
 
 public class Bloon {
 

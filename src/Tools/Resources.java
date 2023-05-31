@@ -1,12 +1,9 @@
 package Tools;
 import java.awt.Image;
-import java.util.HashMap;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
-import java.net.URI;
+import java.util.HashMap;
+
 import javax.swing.ImageIcon;
-import java.awt.Image;
 
 public class Resources {
 
@@ -29,7 +26,10 @@ int:bloons.green.speed:6
 img:monkeys.dart.images.displayico:/img/monkeys/dartmonkey/dartMonkey.png
 img:monkeys.dart.images.placedico:/img/monkeys/dartmonkey/Dart_Monkey_Mobile.png
 
-int:monkeys.dart.stats.default.price:200
+img:monkeys.super.images.displayico:/img/monkeys/dartmonkey/dartMonkey.png
+img:monkeys.super.images.placedico:/img/monkeys/dartmonkey/Dart_Monkey_Mobile.png
+
+int:monkeys.dart.stats.default.price:100
 int:monkeys.dart.stats.default.projSpeed:30
 int:monkeys.dart.stats.default.throwSpeed:20
 int:monkeys.dart.stats.default.throwCooldown:20
@@ -37,6 +37,14 @@ int:monkeys.dart.stats.default.throwCount:1
 int:monkeys.dart.stats.default.throwPierce:1
 int:monkeys.dart.stats.default.throwDamage:1
 int:monkeys.dart.stats.default.range:100
+
+int:monkeys.super.stats.default.price:2000
+int:monkeys.super.stats.default.throwSpeed:50
+int:monkeys.super.stats.default.throwCooldown:1
+int:monkeys.super.stats.default.throwCount:2
+int:monkeys.super.stats.default.throwPierce:1
+int:monkeys.super.stats.default.throwDamage:1
+int:monkeys.super.stats.default.range:300
 END""";
 
     private String root = "";

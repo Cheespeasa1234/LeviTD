@@ -1,5 +1,4 @@
 package Bloon;
-import java.awt.Color;
 import java.awt.Image;
 public class BloonInfo {
     public Image img;

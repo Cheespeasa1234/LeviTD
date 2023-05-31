@@ -1,14 +1,14 @@
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.Image;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import Monkey.DartMonkey;
-import Tools.*;
+import Monkey.SuperMonkey;
+import Tools.CircleButton;
+import Tools.Resources;
 public class GameUI extends JPanel {
 
     public GameUI() {
@@ -22,13 +22,16 @@ public class GameUI extends JPanel {
         JButton dartMonkey = new JButton();
         dartMonkey.setText("M" + Resources.intResources.get("monkey.dart.stats.default.price"));
         dartMonkey.setIcon(new ImageIcon(Resources.imageResources.get("monkeys.dart.images.displayico")));
-        
-        // on click
-        dartMonkey.addActionListener(e -> {
-            Game.monkeyToPlace = new DartMonkey(0, 0);
-        });
+        dartMonkey.addActionListener(e -> { Game.monkeyToPlace = new DartMonkey(0, 0); });
+
+        // add super monkey to the picker
+        JButton superMonkey = new JButton();
+        superMonkey.setText("M" + Resources.intResources.get("monkey.super.stats.default.price"));
+        superMonkey.setIcon(new ImageIcon(Resources.imageResources.get("monkeys.super.images.displayico")));
+        superMonkey.addActionListener(e -> { Game.monkeyToPlace = new SuperMonkey(0, 0); });
 
         monkeyPicker.add(dartMonkey);
+        monkeyPicker.add(superMonkey);
         this.add(monkeyPicker);
 
         JPanel timeCtrls = new JPanel();

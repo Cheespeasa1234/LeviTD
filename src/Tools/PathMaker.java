@@ -1,24 +1,22 @@
 package Tools;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import java.awt.geom.Point2D;
-import java.awt.BasicStroke;
-import java.awt.Toolkit;
-import java.awt.Image;
-import javax.swing.ImageIcon;
-import java.awt.List;
-import java.awt.geom.Point2D;
 
 public class PathMaker extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
 

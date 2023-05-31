@@ -1,15 +1,12 @@
 package Monkey;
-
 import Tools.Resources;
-
-public class DartMonkey extends Monkey {
-
-    public DartMonkey(int x, int y) {
+public class SuperMonkey extends Monkey {
+    
+    public SuperMonkey(int x, int y) {
         super(x, y);
-        
+
         Resources resources = new Resources();
-        
-        resources.cd("monkeys.dart.stats.default");
+        resources.cd("monkeys.super.stats.default");
         this.throwSpeed = resources.getInt("throwSpeed");
         this.throwCooldown = resources.getInt("throwCooldown");
         this.throwCount = resources.getInt("throwCount");
@@ -17,9 +14,10 @@ public class DartMonkey extends Monkey {
         this.throwDamage = resources.getInt("throwDamage");
         this.range = resources.getInt("range");
         
-        resources.cd("monkeys.dart.images");
+        resources.cd("monkeys.super.images");
         this.img = resources.getImg("placedico");
         
         this.throwCooldownRemaining = this.throwCooldown;
     }
+
 }

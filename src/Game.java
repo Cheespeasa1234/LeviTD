@@ -10,15 +10,13 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,8 +32,6 @@ import Projectile.Projectile;
 import Tools.Geometry;
 import Tools.Resources;
 
-import java.awt.geom.AffineTransform;
-
 public class Game extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
 
     private static double scale = 1.5;
@@ -49,7 +45,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
     private static Point2D[] curRoute = Geometry.route1;
     private Point2D mouseLoc;
 
-    private Wave wave1, wave2;
+    private Wave wave1;
     private Wave currentWave;
     private List<Monkey> monkeys;
 
@@ -123,11 +119,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
 
         g2.drawImage(bg, 0, 0, this);
 
-        for (int i = 0; i < curRoute.length - 1; i++) {
-            g2.drawLine((int) curRoute[i].getX(), (int) curRoute[i].getY(), (int) curRoute[i + 1].getX(),
-                    (int) curRoute[i + 1].getY());
-        }
-
         g2.setStroke(new BasicStroke(1));
 
         // draw bloons (ignore the variables)
@@ -199,20 +190,19 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
     }
     @Override public void mouseDragged(MouseEvent e) {}
     
-    @Override public void mouseClicked(MouseEvent e) {
-        
+    @Override public void mouseClicked(MouseEvent e) {}
+
+    @Override public void mouseEntered(MouseEvent e) {}
+
+    @Override public void mouseExited(MouseEvent e) {}
+
+    @Override public void mousePressed(MouseEvent e) {
         if (monkeyToPlace != null && canPlaceMonkey()) {
             monkeyToPlace.pos = e.getPoint();
             monkeys.add(monkeyToPlace);
             monkeyToPlace = null;
         }
     }
-
-    @Override public void mouseEntered(MouseEvent e) {}
-
-    @Override public void mouseExited(MouseEvent e) {}
-
-    @Override public void mousePressed(MouseEvent e) {}
 
     @Override public void mouseReleased(MouseEvent e) {}
 

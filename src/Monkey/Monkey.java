@@ -1,13 +1,13 @@
 package Monkey;
 
+import java.awt.Image;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
-import java.awt.geom.Point2D;
-import java.awt.Image;
 
-import Bloon.*;
-import Tools.*;
-import Projectile.*;
+import Bloon.Bloon;
+import Projectile.Projectile;
+import Tools.Tuple;
 
 public class Monkey {
     
@@ -35,7 +35,7 @@ public class Monkey {
     }
 
 
-    public Object[] bloonsInRange(List<Bloon> allBloons) {
+    public Tuple<List<Bloon>, List<Float>> bloonsInRange(List<Bloon> allBloons) {
         List<Bloon> inRange = new ArrayList<Bloon>();
         List<Float> distances = new ArrayList<Float>();
         for(Bloon bloon : allBloons) {
@@ -49,7 +49,7 @@ public class Monkey {
                 bloon.detected = true;
             }
         }
-        return new Object[] {inRange, distances};
+        return new Tuple<List<Bloon>, List<Float>>(inRange, distances);
     }
 
     public void throwProjectile(List<Bloon> allBloons) {
@@ -59,9 +59,9 @@ public class Monkey {
             return;
         }
 
-        Object[] results = bloonsInRange(allBloons);
-        List<Bloon> inRange = (List<Bloon>) results[0];
-        List<Float> distances = (List<Float>) results[1];
+        Tuple<List<Bloon>, List<Float>> results = bloonsInRange(allBloons);
+        List<Bloon> inRange = results.t1;
+        List<Float> distances = results.t2;
         
         if(inRange.size() == 0) return;
 

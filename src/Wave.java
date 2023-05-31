@@ -1,15 +1,8 @@
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import javax.swing.Timer;
 
 import Bloon.Bloon;
-
-import java.awt.geom.Point2D;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class Wave {
 
