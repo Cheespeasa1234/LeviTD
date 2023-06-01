@@ -18,6 +18,7 @@ public class Monkey {
     public int throwCooldownRemaining = 0;
     public int throwCount, throwPierce, throwDamage; // projs at once, bloons at once, layers at once
     public double range;
+    public int slowPopCount;
     
     public Image img;
     public float lastThrownRot;
@@ -32,6 +33,7 @@ public class Monkey {
         this.pos = new Point2D.Double((double) x, (double) y);
         this.projectiles = new ArrayList<Projectile>();
         this.aim = AimType.FIRST;
+        this.slowPopCount = 0;
     }
 
 
@@ -84,8 +86,10 @@ public class Monkey {
         Projectile thrown = new Projectile(getX(), getY(), bestMatchBloon, 0.0, throwSpeed, throwDamage, throwPierce);
         this.lastThrownRot = (float) Math.atan2(bestMatchBloon.getY() - getY(), bestMatchBloon.getX() - getX()) + (float) Math.PI / 2;
         projectiles.add(thrown);
+        // remove any projectiles that have no pops remaining
         for(int i = 0; i < projectiles.size(); i++) {
-            if(projectiles.get(i).popsRemaining < 1) {
+            if(projectiles.get(i).popsRemaining <= 0) {
+                // add projectile popcount to slowcount
                 projectiles.remove(i);
                 i--;
             }
@@ -94,6 +98,14 @@ public class Monkey {
 
     public int imageSize() {
         return this.img.getWidth(null) / 2;
+    }
+
+    public int getPopCount() {
+        int popCount = this.slowPopCount;
+        for(Projectile proj : projectiles) {
+            popCount += proj.popCount;
+        }
+        return popCount;
     }
 
 }

@@ -51,6 +51,9 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
 
     public static Monkey monkeyToPlace;
     public boolean monkeyCanBePlaced = false;
+    public static Monkey selectedMonkey;
+
+    private GameUI gameUI;
 
     private void timerFunction() {
         repaint();
@@ -63,6 +66,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
                 projectile.move(currentWave.bloons);
                 if (projectile.popsRemaining == 0) {
                     monkey.projectiles.remove(projectile);
+                    monkey.slowPopCount -= projectile.popCount;
                 }
             }
         }
@@ -108,14 +112,19 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
 
         loadWaves("src/easy_mode.levitd");
         monkeys = new ArrayList<Monkey>();
-        JPanel sideBar = new GameUI();
-        this.add(sideBar, BorderLayout.EAST);
+
+        this.gameUI = new GameUI(PREF_H);
+        this.gameUI.infoBar.setVisible(false);
+        this.add(this.gameUI, BorderLayout.EAST);
     }
 
     public void paintComponent(Graphics g) {
 
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+
+        if(selectedMonkey != null)
+            gameUI.infoBar.populateInfo(selectedMonkey);
 
         g2.drawImage(bg, 0, 0, this);
 
@@ -165,6 +174,18 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
                     (int) (monkeyToPlace.range * 2), (int) (monkeyToPlace.range * 2));
         }
 
+        // draw range of selected monkey
+        if (selectedMonkey != null) {
+            g2.setColor(new Color(200, 200, 200, 50));
+            g2.fillOval((int) (selectedMonkey.getX() - selectedMonkey.range),
+                    (int) (selectedMonkey.getY() - selectedMonkey.range), (int) (selectedMonkey.range * 2),
+                    (int) (selectedMonkey.range * 2));
+            g2.setColor(new Color(200, 200, 200));
+            g2.drawOval((int) (selectedMonkey.getX() - selectedMonkey.range),
+                    (int) (selectedMonkey.getY() - selectedMonkey.range), (int) (selectedMonkey.range * 2),
+                    (int) (selectedMonkey.range * 2));
+        }
+
     }
 
     private boolean canPlaceMonkey() {
@@ -197,10 +218,26 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
     @Override public void mouseExited(MouseEvent e) {}
 
     @Override public void mousePressed(MouseEvent e) {
+        // place monkey
         if (monkeyToPlace != null && canPlaceMonkey()) {
             monkeyToPlace.pos = e.getPoint();
             monkeys.add(monkeyToPlace);
             monkeyToPlace = null;
+        } else if(monkeyToPlace == null) {
+            // interact with monkeys
+            for (Monkey monkey : monkeys) {
+                if (monkey.pos.distance(e.getPoint()) < monkey.imageSize()) {
+                    selectedMonkey = monkey;
+                    gameUI.infoBar.setVisible(true);
+                    gameUI.infoBar.populateInfo(monkey);
+                    break;
+                }
+            }
+        }
+        // if clicked anywhere else, deselect monkey and hide info bar
+        if (selectedMonkey != null && selectedMonkey.pos.distance(e.getPoint()) > selectedMonkey.imageSize()) {
+            selectedMonkey = null;
+            gameUI.infoBar.setVisible(false);
         }
     }
 
@@ -238,6 +275,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         // if pressed esc, stop placing monkey
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             monkeyToPlace = null;
+            selectedMonkey = null;
         }
     }
 

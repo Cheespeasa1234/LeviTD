@@ -43,7 +43,7 @@ int:monkeys.super.stats.default.throwSpeed:50
 int:monkeys.super.stats.default.throwCooldown:1
 int:monkeys.super.stats.default.throwCount:2
 int:monkeys.super.stats.default.throwPierce:1
-int:monkeys.super.stats.default.throwDamage:1
+int:monkeys.super.stats.default.throwDamage:5
 int:monkeys.super.stats.default.range:300
 END""";
 

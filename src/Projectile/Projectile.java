@@ -10,6 +10,7 @@ public class Projectile {
     public int speed;
     public int popsRemaining;
     public int popDamage; // how many layers to break
+    public int popCount;
 
     public double getX() { return pos.getX(); }
     public double getY() { return pos.getY(); }
@@ -22,14 +23,13 @@ public class Projectile {
         double yDist = target.getY() - y;
         double dist = Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2)); 
         double ratio = speed / dist;
-
-        // rotate the vector
         
-
+        // rotate the vector
         this.movementVector = new Point2D.Double(xDist * ratio, yDist * ratio);
-
+        
         this.popsRemaining = popsRemaining;
         this.popDamage = layerPierce;
+        this.popCount = 0;
     }
 
     public void move(List<Bloon> bloons) {
@@ -39,7 +39,9 @@ public class Projectile {
         for(Bloon bloon : bloons) {
             // if distance to bloon is less than size
             if(this.pos.distance(bloon.loc) < bloon.getSize()) {
+                int prevHP = bloon.hp;
                 bloon.dealDamage(this.popDamage);
+                this.popCount += bloon.hp - prevHP;
                 this.popsRemaining--;
             }
             if(popsRemaining == 0) break;
