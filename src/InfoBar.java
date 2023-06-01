@@ -1,5 +1,3 @@
-import java.util.Date;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
