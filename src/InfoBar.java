@@ -12,7 +12,7 @@ public class InfoBar extends JPanel {
     public void populateInfo(Monkey monkey) {
         this.removeAll();
         this.add(new JLabel("InfoBar"));
-        this.add(new JLabel("Pops: " + monkey.slowPopCount));
+        this.add(new JLabel("Pops: " + monkey.getPopCount()));
         this.revalidate();
         this.repaint();
     }
