@@ -1,4 +1,4 @@
-package Bloon;
+package levi.bloon;
 import java.awt.Image;
 public class BloonInfo {
     public Image img;

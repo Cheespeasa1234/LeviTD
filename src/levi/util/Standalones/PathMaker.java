@@ -1,4 +1,4 @@
-package Tools;
+package levi.util.Standalones;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;

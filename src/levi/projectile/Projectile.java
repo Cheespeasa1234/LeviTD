@@ -1,9 +1,9 @@
-package Projectile;
+package levi.projectile;
 
 import java.awt.geom.Point2D;
 import java.util.List;
 
-import Bloon.Bloon;
+import levi.bloon.Bloon;
 
 public class Projectile {
     public Point2D pos, movementVector;

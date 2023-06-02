@@ -1,4 +1,5 @@
-package Tools;
+package levi.util;
+
 import java.awt.Image;
 import java.io.FileNotFoundException;
 import java.util.HashMap;

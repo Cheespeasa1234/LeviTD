@@ -1,4 +1,4 @@
-package Monkey;
+package levi.monkey;
 
 public enum AimType {
     FIRST,

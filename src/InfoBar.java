@@ -1,7 +1,8 @@
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import Monkey.Monkey;
+import levi.monkey.Monkey;
 
 public class InfoBar extends JPanel {
     public InfoBar() {

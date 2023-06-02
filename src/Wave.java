@@ -2,7 +2,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import Bloon.Bloon;
+import levi.bloon.Bloon;
 
 public class Wave {
 
