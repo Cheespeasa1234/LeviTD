@@ -151,10 +151,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
             g2.drawImage(monkeyToPlace.img, (int) mouseLoc.getX() - monkeyToPlace.img.getWidth(this) / 2,
                     (int) mouseLoc.getY() - monkeyToPlace.img.getHeight(this) / 2, this);
 
-            int imageSize = monkeyToPlace.imageSize();
-            g2.fillOval((int) monkeyToPlace.getX() - imageSize, (int) monkeyToPlace.getY() - imageSize, imageSize * 2,
-                    imageSize * 2);
-
             // draw range
             if (monkeyCanBePlaced) {
                 g2.setColor(new Color(0, 255, 0, 50));

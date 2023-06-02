@@ -130,9 +130,7 @@ public class Monkey {
         g2.drawOval((int) this.getX(), (int) this.getY(), 2, 2);
         g2.setTransform(old);
         g2.setColor(Color.BLACK);
-        int imageSize = this.imageSize();
-        g2.fillOval((int) this.getX() - imageSize, (int) this.getY() - imageSize, imageSize * 2, imageSize * 2);
-        // show where other monkeys cant be placed
+        
         for (Projectile proj : this.projectiles) {
             g2.fillOval((int) proj.getX() - 5, (int) proj.getY() - 5, 10, 10);
         }
