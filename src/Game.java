@@ -2,6 +2,7 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -23,6 +24,8 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -35,28 +38,34 @@ import levi.util.Resources;
 
 public class Game extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
 
+    // static variables
     private Image bg = new ImageIcon(Game.class.getResource("img/map1.png")).getImage().getScaledInstance(PREF_W - 200,
             PREF_H, Image.SCALE_FAST);
     private static double scale = 1.5;
     public static final int PREF_W = (int) (1920 / scale) + 200;
     public static final int PREF_H = (int) (1080 / scale);
-
     public static Game game;
 
     private static Point2D[] curRoute = Geometry.route1;
     private Point2D mouseLoc;
 
+    // gameplay control
     private Wave wave1;
     private Wave currentWave;
     private List<Monkey> monkeys;
+    private int money = 650;
+    private int health = 200;
 
+    // for placing monkeys
     public Monkey monkeyToPlace;
     private boolean monkeyCanBePlaced = false;
     private static Monkey selectedMonkey;
 
+    // swing components & flags
     private boolean modKeyShift = false;
-
-    private GameUI gameUI;
+    private JPanel currentSidePanel;
+    private InfoBar infoBar;
+    private ShopBar shopBar;
 
     private void timerFunction() {
         repaint();
@@ -68,8 +77,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
                 Projectile projectile = monkey.projectiles.get(i);
                 projectile.move(currentWave.bloons);
                 if (projectile.popsRemaining == 0) {
+                    monkey.slowPopCount += projectile.popCount;
                     monkey.projectiles.remove(projectile);
-                    monkey.slowPopCount -= projectile.popCount;
                 }
             }
         }
@@ -78,12 +87,17 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
             Bloon bloon = currentWave.bloons.get(i);
 
             // if hp is 0 or if it has travelled the entire path
-            if (bloon.hp <= 0 || bloon.distTravelled >= Geometry.pathDistance(curRoute)) {
+            if (bloon.hp <= 0) {
                 currentWave.bloons.remove(bloon);
+            }
+            if (bloon.distTravelled >= Geometry.pathDistance(curRoute)) {
+                currentWave.bloons.remove(bloon);
+                health -= bloon.hp;
             }
 
             bloon.travel(curRoute, bloon.bloonInfo.speed);
         }
+        currentSidePanel.repaint();
     }
 
     private Timer timer = new Timer(1000 / 30, e -> {
@@ -104,6 +118,15 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         currentWave = wave1;
     }
 
+    public void setNonFocusable(Container container) {
+        for (Component component : container.getComponents()) {
+            component.setFocusable(false);
+            if (component instanceof Container) {
+                setNonFocusable((Container) component);
+            }
+        }
+    }
+
     public Game() {
         this.setFocusable(true);
         this.setBackground(Color.WHITE);
@@ -115,9 +138,18 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         loadWaves("src/easy_mode.levitd");
         monkeys = new ArrayList<Monkey>();
 
-        this.gameUI = new GameUI(PREF_H, monkeyToPlace);
-        this.gameUI.infoBar.setVisible(false);
-        this.add(this.gameUI, BorderLayout.EAST);
+        this.infoBar = new InfoBar();
+        this.infoBar.setPreferredSize(new Dimension(200, PREF_H));
+
+        this.shopBar = new ShopBar();
+        this.shopBar.setPreferredSize(new Dimension(200, PREF_H));
+
+        this.currentSidePanel = new JPanel();
+        this.currentSidePanel.setPreferredSize(new Dimension(200, PREF_H));
+        this.currentSidePanel.setLayout(new BorderLayout());
+        this.currentSidePanel.add(shopBar, BorderLayout.NORTH);
+        setNonFocusable(currentSidePanel);
+        this.add(currentSidePanel, BorderLayout.EAST);
 
         timer.start();
     }
@@ -127,9 +159,9 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
-        if (selectedMonkey != null)
-            gameUI.infoBar.populateInfo(selectedMonkey);
-
+        if (selectedMonkey != null) {
+            infoBar.populateInfo(selectedMonkey);
+        }
         g2.drawImage(bg, 0, 0, this);
 
         g2.setStroke(new BasicStroke(1));
@@ -152,20 +184,10 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
                     (int) mouseLoc.getY() - monkeyToPlace.img.getHeight(this) / 2, this);
 
             // draw range
-            if (monkeyCanBePlaced) {
+            g2.setColor(new Color(255, 0, 0, 50));
+            if (monkeyCanBePlaced) 
                 g2.setColor(new Color(0, 255, 0, 50));
-            } else {
-                g2.setColor(new Color(255, 0, 0, 50));
-            }
             g2.fillOval((int) (mouseLoc.getX() - monkeyToPlace.range), (int) (mouseLoc.getY() - monkeyToPlace.range),
-                    (int) (monkeyToPlace.range * 2), (int) (monkeyToPlace.range * 2));
-
-            if (monkeyCanBePlaced) {
-                g2.setColor(new Color(0, 255, 0));
-            } else {
-                g2.setColor(new Color(255, 0, 0));
-            }
-            g2.drawOval((int) (mouseLoc.getX() - monkeyToPlace.range), (int) (mouseLoc.getY() - monkeyToPlace.range),
                     (int) (monkeyToPlace.range * 2), (int) (monkeyToPlace.range * 2));
         }
 
@@ -184,6 +206,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         g2.drawString("modKeyShift: " + modKeyShift, 10, 10);
         Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
         g2.drawString("Focus owner: " + focusOwner, 10, 30);
+        g2.drawString(currentSidePanel.toString(), 10, 50);
 
     }
 
@@ -199,8 +222,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         return !intersectsPath && !intersectsMonkey;
     }
 
-    @Override
-    public void mouseMoved(MouseEvent e) {
+    @Override public void mouseMoved(MouseEvent e) {
         mouseLoc = e.getPoint();
         // set can place to whether or not the monkey is intersecting the path
         if (monkeyToPlace != null) {
@@ -223,8 +245,9 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
             for (Monkey monkey : monkeys) {
                 if (monkey.pos.distance(e.getPoint()) < monkey.imageSize()) {
                     selectedMonkey = monkey;
-                    gameUI.infoBar.setVisible(true);
-                    gameUI.infoBar.populateInfo(monkey);
+                    currentSidePanel.removeAll();
+                    currentSidePanel.add(infoBar);
+                    infoBar.populateInfo(monkey);
                     break;
                 }
             }
@@ -232,32 +255,31 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         // deselection
         if (selectedMonkey != null && selectedMonkey.pos.distance(e.getPoint()) > selectedMonkey.imageSize()) {
             selectedMonkey = null;
-            gameUI.infoBar.setVisible(false);
+            currentSidePanel.removeAll();
+            currentSidePanel.add(shopBar);
         }
     }
 
-    @Override
-    public void mousePressed(MouseEvent e) {
+    @Override public void mousePressed(MouseEvent e) {
         int button = e.getButton();
         if (button == MouseEvent.BUTTON1) {
             handleLeftClick(e);
         }
     }
 
-    @Override
-    public void keyPressed(KeyEvent e) {
+    @Override public void keyPressed(KeyEvent e) {
         int c = e.getKeyCode();
         // if pressed esc, stop placing monkey
         if (c == KeyEvent.VK_ESCAPE) {
             monkeyToPlace = null;
             selectedMonkey = null;
+            currentSidePanel = shopBar;
         } else if (c == KeyEvent.VK_SHIFT) {
             modKeyShift = true;
         }
     }
 
-    @Override
-    public void keyReleased(KeyEvent e) {
+    @Override public void keyReleased(KeyEvent e) {
         int c = e.getKeyCode();
         if (c == KeyEvent.VK_SHIFT) {
             modKeyShift = false;
@@ -283,6 +305,15 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
     }
 
     public static void main(String[] args) throws FileNotFoundException, URISyntaxException {
+        // JFrame loadingFrame = new JFrame("Loading...");
+        // JLabel loading = new JLabel("");
+        // ImageIcon icon = new ImageIcon( Game.class.getResource("img/bigload.gif") );
+        // loading.setIcon(icon);
+        // loadingFrame.add(loading);
+        // loadingFrame.setPreferredSize(new Dimension(300, 300));
+        // loadingFrame.pack();
+        // loadingFrame.setVisible(true);
+        // // set size of loadingframe
         Resources.loadResources();
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -291,28 +322,16 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         });
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
+    @Override public void keyTyped(KeyEvent e) {}
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    }
+    @Override public void mouseReleased(MouseEvent e) {}
 
-    @Override
-    public void mouseDragged(MouseEvent e) {
-    }
+    @Override public void mouseDragged(MouseEvent e) {}
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-    }
+    @Override public void mouseClicked(MouseEvent e) {}
 
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
+    @Override public void mouseEntered(MouseEvent e) {}
 
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
+    @Override public void mouseExited(MouseEvent e) {}
 
 }

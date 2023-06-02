@@ -41,7 +41,7 @@ public class Projectile {
             if(this.pos.distance(bloon.loc) < bloon.getSize()) {
                 int prevHP = bloon.hp;
                 bloon.dealDamage(this.popDamage);
-                this.popCount += bloon.hp - prevHP;
+                this.popCount += prevHP - bloon.hp;
                 this.popsRemaining--;
             }
             if(popsRemaining == 0) break;

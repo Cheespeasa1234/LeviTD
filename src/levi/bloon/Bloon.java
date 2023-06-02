@@ -23,9 +23,13 @@ public class Bloon {
 
     public static Map<Integer, BloonInfo> healthToInfoMap = new HashMap<Integer, BloonInfo>() {
         {
-            put(1, new BloonInfo(new ImageIcon(Bloon.class.getResource("/img/bloons/BTD6Red.png")).getImage(), 2));
-            put(2, new BloonInfo(new ImageIcon(Bloon.class.getResource("/img/bloons/BTD6Blue.png")).getImage(), 4));
-            put(3, new BloonInfo(new ImageIcon(Bloon.class.getResource("/img/bloons/BTD6Green.png")).getImage(), 6));
+            put(1, new BloonInfo("red"));
+            put(2, new BloonInfo("blue"));
+            put(3, new BloonInfo("green"));
+            put(4, new BloonInfo("yellow"));
+            put(5, new BloonInfo("pink"));
+            put(6, new BloonInfo("black"));
+            put(7, new BloonInfo("white"));
         }
     };
 

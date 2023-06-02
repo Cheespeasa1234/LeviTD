@@ -24,6 +24,22 @@ img:bloons.green.imgpath:/img/bloons/BTD6Green.png
 str:bloons.green.onpop:blue
 int:bloons.green.speed:6
 
+img:bloons.yellow.imgpath:/img/bloons/BTD6Yellow.png
+str:bloons.yellow.onpop:green
+int:bloons.yellow.speed:8
+
+img:bloons.pink.imgpath:/img/bloons/BTD6Pink.png
+str:bloons.pink.onpop:yellow
+int:bloons.pink.speed:10
+
+img:bloons.black.imgpath:/img/bloons/BTD6Black.png
+str:bloons.black.onpop:pink,pink
+int:bloons.black.speed:10
+
+img:bloons.white.imgpath:/img/bloons/BTD6White.png
+str:bloons.white.onpop:pink,pink
+int:bloons.white.speed:10
+
 img:monkeys.dart.images.displayico:/img/monkeys/dartmonkey/dartMonkey.png
 img:monkeys.dart.images.placedico:/img/monkeys/dartmonkey/Dart_Monkey_Mobile.png
 
@@ -44,7 +60,7 @@ int:monkeys.super.stats.default.throwSpeed:50
 int:monkeys.super.stats.default.throwCooldown:1
 int:monkeys.super.stats.default.throwCount:2
 int:monkeys.super.stats.default.throwPierce:1
-int:monkeys.super.stats.default.throwDamage:5
+int:monkeys.super.stats.default.throwDamage:1
 int:monkeys.super.stats.default.range:300
 END""";
 

@@ -99,14 +99,11 @@ public class Monkey {
         for (int i = 0; i < projectiles.size(); i++) {
             if (projectiles.get(i).popsRemaining <= 0) {
                 // add projectile popcount to slowcount
+                this.slowPopCount += projectiles.get(i).popCount;
                 projectiles.remove(i);
                 i--;
             }
         }
-    }
-
-    public int imageSize() {
-        return this.img.getWidth(null) / 2;
     }
 
     public int getPopCount() {
@@ -115,6 +112,10 @@ public class Monkey {
             popCount += proj.popCount;
         }
         return popCount;
+    }
+
+    public int imageSize() {
+        return this.img.getWidth(null) / 2;
     }
 
     public Monkey ofSameType() {
