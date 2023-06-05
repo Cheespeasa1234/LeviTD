@@ -4,11 +4,12 @@ import java.util.List;
 
 import levi.bloon.Bloon;
 import levi.projectile.Projectile;
+import levi.projectile.Boomerang;
 import levi.util.Resources;
 
-public class DartMonkey extends Monkey {
+public class BoomerangMonkey extends Monkey {
 
-    public DartMonkey(int x, int y) {
+    public BoomerangMonkey(int x, int y) {
         super(x, y);
         
         Resources resources = new Resources();
@@ -26,6 +27,16 @@ public class DartMonkey extends Monkey {
         this.img = resources.getImg("placedico");
         
         this.throwCooldownRemaining = this.throwCooldown;
+    }
+
+    public void throwProjectile(List<Bloon> allBloons) {
+        Bloon bestMatchBloon = getBestMatch(allBloons);
+        if(bestMatchBloon == null) return;
+        this.throwCooldownRemaining = 0;
+        Projectile thrown = new Boomerang(getX(), getY(), bestMatchBloon, 0.0, throwSpeed, throwDamage, throwPierce);
+        this.lastThrownRot = (float) Math.atan2(bestMatchBloon.getY() - getY(), bestMatchBloon.getX() - getX())
+                + (float) Math.PI / 2;
+        projectiles.add(thrown);
     }
 
     public Monkey ofSameType() {

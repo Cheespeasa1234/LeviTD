@@ -78,7 +78,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
             for (int i = 0; i < monkey.projectiles.size(); i++) {
                 Projectile projectile = monkey.projectiles.get(i);
                 projectile.move(currentWave.bloons);
-                if (projectile.popsRemaining == 0) {
+                if (projectile.isDone || projectile.popsRemaining == 0) {
                     monkey.slowPopCount += projectile.popCount;
                     monkey.projectiles.remove(projectile);
                 }
@@ -335,6 +335,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
                 createAndShowGUI();
             }
         });
+
+
     }
 
     @Override public void keyTyped(KeyEvent e) {}

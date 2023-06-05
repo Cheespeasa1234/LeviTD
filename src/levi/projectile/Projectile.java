@@ -11,10 +11,21 @@ public class Projectile {
     public int popsRemaining;
     public int popDamage; // how many layers to break
     public int popCount;
+    public boolean isDone = false;
 
     public double getX() { return pos.getX(); }
     public double getY() { return pos.getY(); }
 
+    /*
+    * Projectile constructor
+    * @param x x position of the projectile
+    * @param y y position of the projectile
+    * @param target the bloon to target
+    * @param rotOffsetThetha the angle to offset the projectile by
+    * @param speed the speed of the projectile
+    * @param popsRemaining how many layers total a projectile can pop
+    * @param layerPierce how many layers a projectile can pop per bloon
+    */
     public Projectile(double x, double y, Bloon target, double rotOffsetThetha, double speed, int popsRemaining, int layerPierce) {
         
         // calculate vector to bloon

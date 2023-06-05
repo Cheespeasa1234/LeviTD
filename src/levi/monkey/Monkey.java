@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import levi.bloon.Bloon;
+import levi.projectile.Boomerang;
 import levi.projectile.Projectile;
 import levi.util.Tuple;
 
@@ -63,10 +64,20 @@ public class Monkey {
     }
 
     public void throwProjectile(List<Bloon> allBloons) {
+        Bloon bestMatchBloon = getBestMatch(allBloons);
+        if(bestMatchBloon == null) return;
+        this.throwCooldownRemaining = 0;
+        Projectile thrown = new Projectile(getX(), getY(), bestMatchBloon, 0.0, throwSpeed, throwDamage, throwPierce);
+        this.lastThrownRot = (float) Math.atan2(bestMatchBloon.getY() - getY(), bestMatchBloon.getX() - getX())
+                + (float) Math.PI / 2;
+        projectiles.add(thrown);
+    }
+
+    public Bloon getBestMatch(List<Bloon> allBloons) {
 
         if (throwCooldownRemaining < throwCooldown) {
             throwCooldownRemaining++;
-            return;
+            return null;
         }
 
         Tuple<List<Bloon>, List<Float>> results = bloonsInRange(allBloons);
@@ -74,7 +85,7 @@ public class Monkey {
         List<Float> distances = results.t2;
 
         if (inRange.size() == 0)
-            return;
+            return null;
 
         Bloon bestMatchBloon = inRange.get(0);
         float bestMatchValue = distances.get(0);
@@ -91,20 +102,7 @@ public class Monkey {
             }
         }
 
-        this.throwCooldownRemaining = 0;
-        Projectile thrown = new Projectile(getX(), getY(), bestMatchBloon, 0.0, throwSpeed, throwDamage, throwPierce);
-        this.lastThrownRot = (float) Math.atan2(bestMatchBloon.getY() - getY(), bestMatchBloon.getX() - getX())
-                + (float) Math.PI / 2;
-        projectiles.add(thrown);
-        // remove any projectiles that have no pops remaining
-        for (int i = 0; i < projectiles.size(); i++) {
-            if (projectiles.get(i).popsRemaining <= 0) {
-                // add projectile popcount to slowcount
-                this.slowPopCount += projectiles.get(i).popCount;
-                projectiles.remove(i);
-                i--;
-            }
-        }
+        return bestMatchBloon;
     }
 
     public int getPopCount() {
@@ -135,6 +133,11 @@ public class Monkey {
         
         for (Projectile proj : this.projectiles) {
             g2.fillOval((int) proj.getX() - 5, (int) proj.getY() - 5, 10, 10);
+            if(proj instanceof Boomerang) {
+                Boomerang casted = (Boomerang) proj;
+                g2.drawString(casted.boomerangTravelledRatio + "", (int) proj.getX(), (int) proj.getY() + 20);
+                g2.drawString(casted.boomerangBack + "", (int) proj.getX(), (int) proj.getY() + 40);
+            }
         }
     }
 
