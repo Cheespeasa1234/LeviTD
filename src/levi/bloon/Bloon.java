@@ -18,7 +18,10 @@ public class Bloon {
     public double getX() { return loc.getX(); }
     public double getY() { return loc.getY(); }
     public Image getImage() { return bloonInfo.img; }
-    public int getSize() { return bloonInfo.size; }
+    public int getSize() { 
+        // image size
+        return bloonInfo.img.getWidth(null);
+    }
     public int getSpeed() { return bloonInfo.speed; }
 
     public static Map<Integer, BloonInfo> healthToInfoMap = new HashMap<Integer, BloonInfo>() {

@@ -16,6 +16,7 @@ public class DartMonkey extends Monkey {
         this.throwPierce = resources.getInt("throwPierce");
         this.throwDamage = resources.getInt("throwDamage");
         this.range = resources.getInt("range");
+        this.price = resources.getInt("price");
         
         resources.cd("monkeys.dart.images");
         this.img = resources.getImg("placedico");

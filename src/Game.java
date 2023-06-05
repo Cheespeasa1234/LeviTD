@@ -13,6 +13,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -53,7 +54,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
     private Wave wave1;
     private Wave currentWave;
     private List<Monkey> monkeys;
-    private int money = 650;
+    private int money = 10000;
     private int health = 200;
 
     // for placing monkeys
@@ -63,6 +64,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
 
     // swing components & flags
     private boolean modKeyShift = false;
+    private boolean debug = false;
     private JPanel currentSidePanel;
     private InfoBar infoBar;
     private ShopBar shopBar;
@@ -158,18 +160,20 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
 
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+        g2.drawImage(bg, 0, 0, this);
 
         if (selectedMonkey != null) {
             infoBar.populateInfo(selectedMonkey);
         }
-        g2.drawImage(bg, 0, 0, this);
-
-        g2.setStroke(new BasicStroke(1));
 
         // draw bloons (ignore the variables)
         for (Bloon bloon : currentWave.bloons) {
             g2.drawImage(bloon.getImage(), (int) bloon.getX() - bloon.getImage().getWidth(this) / 2,
                     (int) bloon.getY() - bloon.getImage().getHeight(this) / 2, this);
+            // circle of bloon size
+            g2.setColor(Color.RED);
+            g2.drawOval((int) bloon.getX() - bloon.getSize() / 2,
+                    (int) bloon.getY() - bloon.getSize() / 2, bloon.getSize(), bloon.getSize());
         }
 
         for (Monkey monkey : monkeys) {
@@ -194,20 +198,24 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         // draw range of selected monkey
         if (selectedMonkey != null) {
             g2.setColor(new Color(200, 200, 200, 50));
-            g2.fillOval((int) (selectedMonkey.getX() - selectedMonkey.range),
+            Ellipse2D oval = new Ellipse2D.Double((int) (selectedMonkey.getX() - selectedMonkey.range),
                     (int) (selectedMonkey.getY() - selectedMonkey.range), (int) (selectedMonkey.range * 2),
                     (int) (selectedMonkey.range * 2));
+            g2.fill(oval);
             g2.setColor(new Color(200, 200, 200));
-            g2.drawOval((int) (selectedMonkey.getX() - selectedMonkey.range),
-                    (int) (selectedMonkey.getY() - selectedMonkey.range), (int) (selectedMonkey.range * 2),
-                    (int) (selectedMonkey.range * 2));
+            g2.draw(oval);
         }
 
-        g2.drawString("modKeyShift: " + modKeyShift, 10, 10);
-        Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-        g2.drawString("Focus owner: " + focusOwner, 10, 30);
-        g2.drawString(currentSidePanel.toString(), 10, 50);
+        g2.setColor(Color.BLACK);
+        g2.drawString("HP: " + health, 10, PREF_H - 10);
+        g2.drawString("$M: " + money, 10, PREF_H - 30);
 
+        if(debug) {
+            g2.drawString("modKeyShift: " + modKeyShift, 10, 10);
+            Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+            g2.drawString("Focus owner: " + focusOwner, 10, 30);
+            g2.drawString(currentSidePanel.toString(), 10, 50);
+        }
     }
 
     private boolean canPlaceMonkey() {
@@ -219,13 +227,19 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
                 break;
             }
         }
-        return !intersectsPath && !intersectsMonkey;
+        return monkeyToPlace.price <= money && !intersectsPath && !intersectsMonkey;
     }
 
     @Override public void mouseMoved(MouseEvent e) {
         mouseLoc = e.getPoint();
         // set can place to whether or not the monkey is intersecting the path
         if (monkeyToPlace != null) {
+            if(monkeyToPlace.price > money) {
+                monkeyCanBePlaced = false;
+                monkeyToPlace = null;
+            } else {
+                monkeyCanBePlaced = canPlaceMonkey();
+            }
             monkeyCanBePlaced = canPlaceMonkey();
             monkeyToPlace.pos = mouseLoc;
         }
@@ -233,8 +247,9 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
 
     public void handleLeftClick(MouseEvent e) {
         // place monkey
-        if (monkeyToPlace != null && canPlaceMonkey()) {
+        if (monkeyToPlace != null && canPlaceMonkey() && money >= monkeyToPlace.price) {
             monkeyToPlace.pos = e.getPoint();
+            money -= monkeyToPlace.price;
             monkeys.add(monkeyToPlace);
             monkeyToPlace = monkeyToPlace.ofSameType();
             if (!modKeyShift) {

@@ -26,13 +26,13 @@ public class ShopBar extends JPanel {
         // add dart monkey to the picker
         JButton dartMonkey = new JButton();
         dartMonkey.setText("M" + Resources.intResources.get("monkey.dart.stats.default.price"));
-        dartMonkey.setIcon(new ImageIcon(Resources.imageResources.get("monkeys.dart.images.displayico")));
+        dartMonkey.setIcon(new ImageIcon(Resources.imageResources.get("monkeys.dart.images.placedico")));
         dartMonkey.addActionListener(e -> { Game.game.monkeyToPlace = new DartMonkey(0, 0); });
 
         // add super monkey to the picker
         JButton superMonkey = new JButton();
         superMonkey.setText("M" + Resources.intResources.get("monkey.super.stats.default.price"));
-        superMonkey.setIcon(new ImageIcon(Resources.imageResources.get("monkeys.super.images.displayico")));
+        superMonkey.setIcon(new ImageIcon(Resources.imageResources.get("monkeys.super.images.placedico")));
         superMonkey.addActionListener(e -> { Game.game.monkeyToPlace = new SuperMonkey(0, 0); });
 
         monkeyPicker.add(dartMonkey);

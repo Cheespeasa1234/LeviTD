@@ -22,6 +22,7 @@ public class Monkey {
     public int throwCount, throwPierce, throwDamage; // projs at once, bloons at once, layers at once
     public double range;
     public int slowPopCount;
+    public int price;
 
     public Image img;
     public float lastThrownRot;
