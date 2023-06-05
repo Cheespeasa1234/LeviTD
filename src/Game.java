@@ -54,7 +54,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
     private Wave wave1;
     private Wave currentWave;
     private List<Monkey> monkeys;
-    private int money = 10000;
+    private int money = 200;
     private int health = 200;
 
     // for placing monkeys
@@ -181,7 +181,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         }
 
         // draw monkey to place
-        if (monkeyToPlace != null) {
+        if (mouseLoc != null && monkeyToPlace != null) {
 
             // draw monkey
             g2.drawImage(monkeyToPlace.img, (int) mouseLoc.getX() - monkeyToPlace.img.getWidth(this) / 2,

@@ -14,7 +14,7 @@ public class BoomerangMonkey extends Monkey {
         
         Resources resources = new Resources();
         
-        resources.cd("monkeys.dart.stats.default");
+        resources.cd("monkeys.boomerang.stats.default");
         this.throwSpeed = resources.getInt("throwSpeed");
         this.throwCooldown = resources.getInt("throwCooldown");
         this.throwCount = resources.getInt("throwCount");
@@ -23,13 +23,19 @@ public class BoomerangMonkey extends Monkey {
         this.range = resources.getInt("range");
         this.price = resources.getInt("price");
         
-        resources.cd("monkeys.dart.images");
+        resources.cd("monkeys.boomerang.images");
         this.img = resources.getImg("placedico");
         
         this.throwCooldownRemaining = this.throwCooldown;
     }
 
     public void throwProjectile(List<Bloon> allBloons) {
+
+        if (throwCooldownRemaining < this.throwCooldown) {
+            throwCooldownRemaining++;
+            return;
+        }
+
         Bloon bestMatchBloon = getBestMatch(allBloons);
         if(bestMatchBloon == null) return;
         this.throwCooldownRemaining = 0;

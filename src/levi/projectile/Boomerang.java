@@ -11,7 +11,7 @@ public class Boomerang extends Projectile {
     public Point2D origin;
     public boolean boomerangBack = false;
     public Boomerang(double x, double y, Bloon target, double rotOffsetThetha, double speed, int popsRemaining, int layerPierce) {
-        super(x, y, target, rotOffsetThetha, speed, 10000, layerPierce);
+        super(x, y, target, rotOffsetThetha, speed, popsRemaining, layerPierce);
         origin = new Point2D.Double(x, y);
     }
     public void move(List<Bloon> bloons) {

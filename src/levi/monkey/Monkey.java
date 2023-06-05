@@ -75,11 +75,6 @@ public class Monkey {
 
     public Bloon getBestMatch(List<Bloon> allBloons) {
 
-        if (throwCooldownRemaining < throwCooldown) {
-            throwCooldownRemaining++;
-            return null;
-        }
-
         Tuple<List<Bloon>, List<Float>> results = bloonsInRange(allBloons);
         List<Bloon> inRange = results.t1;
         List<Float> distances = results.t2;
