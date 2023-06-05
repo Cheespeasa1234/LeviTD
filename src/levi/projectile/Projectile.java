@@ -1,16 +1,18 @@
 package levi.projectile;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.List;
 
 import levi.bloon.Bloon;
 
 public class Projectile {
     public Point2D pos, movementVector;
-    public int speed;
-    public int popsRemaining;
-    public int popDamage; // how many layers to break
-    public int popCount;
+    public List<Bloon> touched;
+    public int speed; // movement speed
+    public int popsRemaining; // total durability for bloon
+    public int popDamage; // how many layers it can break at once
+    public int popCount; // how many layers it has popped
     public boolean isDone = false;
 
     public double getX() { return pos.getX(); }
@@ -23,7 +25,7 @@ public class Projectile {
     * @param target the bloon to target
     * @param rotOffsetThetha the angle to offset the projectile by
     * @param speed the speed of the projectile
-    * @param popsRemaining how many layers total a projectile can pop
+    * @param popsRemaining how many layers total a projectile can pop, per bloon
     * @param layerPierce how many layers a projectile can pop per bloon
     */
     public Projectile(double x, double y, Bloon target, double rotOffsetThetha, double speed, int popsRemaining, int layerPierce) {
@@ -41,17 +43,20 @@ public class Projectile {
         this.popsRemaining = popsRemaining;
         this.popDamage = layerPierce;
         this.popCount = 0;
+        this.touched = new ArrayList<Bloon>();
     }
 
     public void move(List<Bloon> bloons) {
         double newX = this.pos.getX() + this.movementVector.getX();
         double newY = this.pos.getY() + this.movementVector.getY();
         this.pos.setLocation(newX, newY);
+        
         for(Bloon bloon : bloons) {
             // if distance to bloon is less than size
-            if(this.pos.distance(bloon.loc) < bloon.getSize()) {
+            if(touched.indexOf(bloon) < 0 && this.pos.distance(bloon.loc) < bloon.getSize()) {
                 int prevHP = bloon.hp;
                 bloon.dealDamage(this.popDamage);
+                touched.add(bloon);
                 this.popCount += prevHP - bloon.hp;
                 this.popsRemaining--;
             }

@@ -39,7 +39,7 @@ public class BoomerangMonkey extends Monkey {
         Bloon bestMatchBloon = getBestMatch(allBloons);
         if(bestMatchBloon == null) return;
         this.throwCooldownRemaining = 0;
-        Projectile thrown = new Boomerang(getX(), getY(), bestMatchBloon, 0.0, throwSpeed, throwDamage, throwPierce);
+        Projectile thrown = new Boomerang(getX(), getY(), bestMatchBloon, 0.0, throwSpeed, throwPierce, throwDamage);
         this.lastThrownRot = (float) Math.atan2(bestMatchBloon.getY() - getY(), bestMatchBloon.getX() - getX())
                 + (float) Math.PI / 2;
         projectiles.add(thrown);

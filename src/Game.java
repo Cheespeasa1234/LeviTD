@@ -54,7 +54,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
     private Wave wave1;
     private Wave currentWave;
     private List<Monkey> monkeys;
-    private int money = 200;
+    private int money = 2000000000;
     private int health = 200;
 
     // for placing monkeys

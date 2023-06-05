@@ -70,7 +70,7 @@ int:monkeys.boomerang.stats.default.price:200
 int:monkeys.boomerang.stats.default.throwSpeed:20
 int:monkeys.boomerang.stats.default.throwCooldown:20
 int:monkeys.boomerang.stats.default.throwCount:1
-int:monkeys.boomerang.stats.default.throwPierce:1
+int:monkeys.boomerang.stats.default.throwPierce:10
 int:monkeys.boomerang.stats.default.throwDamage:1
 int:monkeys.boomerang.stats.default.range:150
 END""";
@@ -82,7 +82,6 @@ END""";
     }
 
     public int getInt(String path) {
-        System.out.println(root + "." + path);
         return intResources.get(root + "." + path);
     }
 
