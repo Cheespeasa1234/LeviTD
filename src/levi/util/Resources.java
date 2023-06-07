@@ -70,13 +70,16 @@ public class Resources {
             int:bloons.lead.immunityID:1
 
             img:monkeys.dart.images.displayico:/img/monkeys/displayicon/dartMonkey.png
-            img:monkeys.dart.images.placedico:/img/monkeys/dartmonkey/Dart_Monkey_Mobile.png
+            img:monkeys.dart.images.placedico:/img/monkeys/placeicon/dart.png
 
             img:monkeys.super.images.displayico:/img/monkeys/displayicon/superMonkey.png
-            img:monkeys.super.images.placedico:/img/monkeys/dartmonkey/Dart_Monkey_Mobile.png
+            img:monkeys.super.images.placedico:/img/monkeys/placeicon/super.png
 
             img:monkeys.boomerang.images.displayico:/img/monkeys/displayicon/boomerMonkey.png
-            img:monkeys.boomerang.images.placedico:/img/monkeys/dartmonkey/Dart_Monkey_Mobile.png
+            img:monkeys.boomerang.images.placedico:/img/monkeys/placeicon/boomerang.png
+
+            img:monkeys.tack.images.displayico:/img/monkeys/displayicon/tackShooter.png
+            img:monkeys.tack.images.placedico:/img/monkeys/placeicon/tack.png
 
             int:monkeys.dart.stats.default.price:100
             int:monkeys.dart.stats.default.projSpeed:30
@@ -102,6 +105,14 @@ public class Resources {
             int:monkeys.boomerang.stats.default.throwPierce:10
             int:monkeys.boomerang.stats.default.throwDamage:1
             int:monkeys.boomerang.stats.default.range:150
+
+            int:monkeys.tack.stats.default.price:360
+            int:monkeys.tack.stats.default.throwSpeed:10
+            int:monkeys.tack.stats.default.throwCooldown:20
+            int:monkeys.tack.stats.default.throwCount:8
+            int:monkeys.tack.stats.default.throwPierce:1
+            int:monkeys.tack.stats.default.throwDamage:1
+            int:monkeys.tack.stats.default.range:80
             END""";
 
     private String root = "";

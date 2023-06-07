@@ -59,7 +59,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
     public Wave currentWave;
     private List<Monkey> monkeys;
     private int health = 200;
-    public int money = 200;
+    public int money = 2300;
     public int deltaTime = 1;
 
     // for placing monkeys
@@ -82,7 +82,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
     public void toast(String toast) {
         int frames = 250;
         toastTimeRemaining = frames;
-        toastMessage = toast.replaceAll("_", " ");
+        toastMessage = toast;
     }
 
     public void setReward(int reward) {
@@ -266,7 +266,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
 
         // set transparency of everything to 50
 
-        if(toReward > 0 && toastTimeRemaining >= -20) {
+        if(!toastMessage.equals(" ") && toReward > 0 && toastTimeRemaining >= -20) {
             toastTimeRemaining --;
             AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
             AlphaComposite normal = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f);

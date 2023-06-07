@@ -1,6 +1,7 @@
 
 import java.awt.Button;
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -14,6 +15,7 @@ import javax.swing.JPanel;
 import levi.monkey.BoomerangMonkey;
 import levi.monkey.DartMonkey;
 import levi.monkey.SuperMonkey;
+import levi.monkey.TackShooter;
 import levi.monkey.Monkey;
 import levi.util.CircleButton;
 import levi.util.Resources;
@@ -29,15 +31,18 @@ public class ShopBar extends JPanel {
         JPanel monkeyPicker = new JPanel();
         monkeyPicker.setLayout(new GridLayout(0, 2));
 
-        Monkey[] monkeySamples = {new DartMonkey(0,0), new BoomerangMonkey(0,0), new SuperMonkey(0,0)};
+        Monkey[] monkeySamples = {new DartMonkey(0,0), new BoomerangMonkey(0,0), new SuperMonkey(0,0), new TackShooter(0,0)};
         for(Monkey monkeySample : monkeySamples) {
             JButton button = new JButton() {
                 String path = "monkeys." + monkeySample.resourceIdentifier + ".images.displayico";
-                Image img = Resources.imageResources.get(path).getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+                Image img = Resources.imageResources.get(path).getScaledInstance(65, 80, Image.SCALE_SMOOTH);
                 public void paint(Graphics g) {
                     super.paint(g);
-                    g.drawImage(img, 20, 0, null);
-                    g.drawString("M" + monkeySample.price, 0, img.getHeight(null) + 30);
+                    g.drawImage(img, this.getWidth() / 2 - img.getWidth(null) / 2, 30, null);
+                    String str = "$M " + monkeySample.price;
+                    FontMetrics fm = g.getFontMetrics();
+                    g.drawString(str, this.getWidth() / 2 - fm.stringWidth(str) / 2 - fm.stringWidth("$M ") / 2, this.getHeight() - 15);
+                    g.drawLine(5, this.getHeight() - 35, this.getWidth() - 5, this.getHeight() - 35);
                 }
             };
             

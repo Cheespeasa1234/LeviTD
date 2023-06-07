@@ -34,7 +34,7 @@ public class Wave {
                 } else if (type == 'M') {
                     message = args[1];
                     reward = Integer.valueOf(args[2]);
-                    Game.game.toast(message);
+                    Game.game.toast(message.replaceAll("_", " "));
                     Game.game.setReward(reward);
                 } else if (type == 'B') {
                     int id = Integer.valueOf(args[1]);

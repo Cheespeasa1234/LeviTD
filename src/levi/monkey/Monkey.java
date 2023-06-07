@@ -28,6 +28,7 @@ public class Monkey {
     public int price;
 
     public Image img;
+    public Point2D imgScale;
     public float lastThrownRot;
 
     public AimType aim;
@@ -46,6 +47,7 @@ public class Monkey {
         this.projectiles = new ArrayList<Projectile>();
         this.aim = AimType.FIRST;
         this.slowPopCount = 0;
+        this.imgScale = new Point2D.Double(64, 64);
     }
 
     public void loadResources() {
@@ -62,6 +64,7 @@ public class Monkey {
         
         resources.cd("monkeys." + this.resourceIdentifier + ".images");
         this.img = resources.getImg("placedico");
+        this.img = this.img.getScaledInstance((int) imgScale.getX(), (int) imgScale.getY(), Image.SCALE_FAST);
         
         this.throwCooldownRemaining = this.throwCooldown;
     }

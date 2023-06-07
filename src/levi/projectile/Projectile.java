@@ -46,6 +46,20 @@ public class Projectile {
         this.touched = new ArrayList<Bloon>();
     }
 
+    public Projectile(double x, double y, int dx, int dy, double speed, int popsRemaining, int layerPierce) {
+        
+        // calculate vector to bloon
+        this.pos = new Point2D.Double(x, y);
+        
+        // rotate the vector
+        this.movementVector = new Point2D.Double((float) dx * speed, (float) dy * speed);
+        
+        this.popsRemaining = popsRemaining;
+        this.popDamage = layerPierce;
+        this.popCount = 0;
+        this.touched = new ArrayList<Bloon>();
+    }
+
     public void move(List<Bloon> bloons) {
         double newX = this.pos.getX() + this.movementVector.getX();
         double newY = this.pos.getY() + this.movementVector.getY();

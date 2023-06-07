@@ -1,5 +1,7 @@
 package levi.monkey;
 
+import java.awt.Image;
+import java.awt.geom.Point2D;
 import java.util.List;
 
 import levi.bloon.Bloon;
@@ -14,6 +16,7 @@ public class BoomerangMonkey extends Monkey {
 
         resourceIdentifier = "boomerang";
         
+        this.imgScale = new Point2D.Double(64, 80);
         loadResources();
     }
 
