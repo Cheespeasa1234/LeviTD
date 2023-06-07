@@ -1,7 +1,9 @@
 package levi.bloon;
 import java.awt.Image;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
@@ -24,29 +26,50 @@ public class Bloon {
     }
     public int getSpeed() { return bloonInfo.speed; }
 
-    public static Map<Integer, BloonInfo> healthToInfoMap = new HashMap<Integer, BloonInfo>() {
-        {
-            put(1, new BloonInfo("red"));
-            put(2, new BloonInfo("blue"));
-            put(3, new BloonInfo("green"));
-            put(4, new BloonInfo("yellow"));
-            put(5, new BloonInfo("pink"));
-            put(6, new BloonInfo("black"));
-            put(7, new BloonInfo("white"));
+    // @return list of bloons to spawn because of popping
+    public List<Bloon> dealDamage(int damage) {
+        List<Bloon> newBloons = new ArrayList<Bloon>();
+        this.hp -= damage;
+        // if out of HP and not a red bloon
+        if(this.hp <= 0 && this.bloonInfo != BloonInfo.IDToInfoMap[0]) {
+            // if this bloon pops to multiple bloons:
+            if(this.bloonInfo.popsTo.length > 1) {
+                // spawn all of them
+                for(int i = 0; i < this.bloonInfo.popsTo.length; i++) {
+                    BloonInfo newBloonInfo = BloonInfo.IDToInfoMap[this.bloonInfo.popsTo[i]];
+                    Bloon newBloon = new Bloon(newBloonInfo, this.loc);
+                    // set its location to mine
+                    newBloon.distTravelled = this.distTravelled + i * this.getSize() / 4;
+                    newBloons.add(newBloon);
+                }
+                this.hp = -1;
+            } else {
+                // set myself to the bloon
+                this.bloonInfo = BloonInfo.IDToInfoMap[this.bloonInfo.popsTo[0]];
+                this.hp = this.bloonInfo.hp;
+            }
+        // if out of HP and a red bloon
+        } else if(this.hp <= 0 && this.bloonInfo == BloonInfo.IDToInfoMap[0]) {
+            this.hp = -1;
         }
-    };
-
-    public void dealDamage(int hp) {
-        this.hp -= hp;
-        if (this.hp > 0)
-            this.bloonInfo = healthToInfoMap.get(this.hp);
+        
+        return newBloons;
     }
 
-    public Bloon(int hp, Point2D start) {
+    public Bloon(int ID, Point2D start) {
         this.loc = start;
         this.distTravelled = 0;
-        this.hp = hp;
-        this.bloonInfo = healthToInfoMap.get(hp);
+
+        this.bloonInfo = BloonInfo.IDToInfoMap[ID];
+        this.hp = bloonInfo.hp;
+    }
+
+    public Bloon(BloonInfo bloonInfo, Point2D start) {
+        this.loc = start;
+        this.distTravelled = 0;
+
+        this.hp = bloonInfo.hp;
+        this.bloonInfo = bloonInfo;
     }
 
     public void travel(Point2D[] route, int distance) {
@@ -72,7 +95,6 @@ public class Bloon {
                 // get the fraction travelled down this line so far
                 double distSoFar = (distanceToTravel - totalTraversed) / lineLength;
                 // get the point on the line that is that fraction far down
-
                 double x = currentLine[0].getX() + distSoFar * (currentLine[1].getX() - currentLine[0].getX());
                 double y = currentLine[0].getY() + distSoFar * (currentLine[1].getY() - currentLine[0].getY());
                 Point2D point = new Point2D.Double(x, y);

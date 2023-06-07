@@ -8,16 +8,18 @@ public class Wave {
 
     public int round = 0;
     public int difficulty = 1;
+    public int reward;
+    public String message;
 
     private Runnable onFinish;
     public List<Bloon> bloons = new ArrayList<Bloon>();
 
-    public Wave(String info, Point2D start) {
+    public Wave(String info) {
 
         int waited = 0;
         boolean separate = false;
         System.out.println(info);
-        int lineNum = 0;
+        int lineNum = 1;
         try {
             for (String line : info.replaceAll("\n", "").split(";")) {
                 lineNum++;
@@ -29,12 +31,18 @@ public class Wave {
                 if (type == '#') {
                     // is a comment
                     System.out.println("Comment: " + line);
+                } else if (type == 'M') {
+                    message = args[1];
+                    reward = Integer.valueOf(args[2]);
+                    Game.game.toast(message);
+                    Game.game.setReward(reward);
                 } else if (type == 'B') {
-                    int hp = Integer.valueOf(args[1]);
+                    int id = Integer.valueOf(args[1]);
                     int count = Integer.valueOf(args[2]);
                     int separation = Integer.valueOf(args[3]);
+                    System.out.println("SPAWNING A BLOON - id:" + id + " count:" + count + " sep:" + separation);
                     for (int i = 0; i < count; i++) {
-                        Bloon bloon = new Bloon(hp, null);
+                        Bloon bloon = new Bloon(id, Game.curRoute[0]);
                         bloon.distTravelled = -separation * i - waited;
                         bloons.add(bloon);
                     }
@@ -52,6 +60,7 @@ public class Wave {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Error parsing wave info, line: " + lineNum);
         }
         if (onFinish != null)

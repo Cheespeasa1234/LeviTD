@@ -5,24 +5,12 @@ import levi.bloon.Bloon;
 import levi.projectile.Projectile;
 import levi.util.Resources;
 public class SuperMonkey extends Monkey {
-    
+
     public SuperMonkey(int x, int y) {
         super(x, y);
 
-        Resources resources = new Resources();
-        resources.cd("monkeys.super.stats.default");
-        this.throwSpeed = resources.getInt("throwSpeed");
-        this.throwCooldown = resources.getInt("throwCooldown");
-        this.throwCount = resources.getInt("throwCount");
-        this.throwPierce = resources.getInt("throwPierce");
-        this.throwDamage = resources.getInt("throwDamage");
-        this.range = resources.getInt("range");
-        this.price = resources.getInt("price");
-        
-        resources.cd("monkeys.super.images");
-        this.img = resources.getImg("placedico");
-        
-        this.throwCooldownRemaining = this.throwCooldown;
+        resourceIdentifier = "super";
+        loadResources();
     }
 
     public void throwProjectile(List<Bloon> allBloons) {

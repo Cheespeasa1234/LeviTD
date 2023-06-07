@@ -1,4 +1,5 @@
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -12,6 +13,14 @@ public class InfoBar extends JPanel {
         this.removeAll();
         this.add(new JLabel("InfoBar"));
         this.add(new JLabel("Pops: " + monkey.getPopCount()));
+
+        JButton switchAimType = new JButton(monkey.aim.name());
+        switchAimType.addActionListener(e -> {
+            monkey.aim = monkey.aim.next();
+            switchAimType.setText(monkey.aim.name());
+        });
+        this.add(switchAimType);
+        this.add(new JLabel("Aim: " + monkey.aim.name()));
         this.revalidate();
         this.repaint();
     }

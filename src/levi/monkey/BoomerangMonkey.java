@@ -11,22 +11,10 @@ public class BoomerangMonkey extends Monkey {
 
     public BoomerangMonkey(int x, int y) {
         super(x, y);
+
+        resourceIdentifier = "boomerang";
         
-        Resources resources = new Resources();
-        
-        resources.cd("monkeys.boomerang.stats.default");
-        this.throwSpeed = resources.getInt("throwSpeed");
-        this.throwCooldown = resources.getInt("throwCooldown");
-        this.throwCount = resources.getInt("throwCount");
-        this.throwPierce = resources.getInt("throwPierce");
-        this.throwDamage = resources.getInt("throwDamage");
-        this.range = resources.getInt("range");
-        this.price = resources.getInt("price");
-        
-        resources.cd("monkeys.boomerang.images");
-        this.img = resources.getImg("placedico");
-        
-        this.throwCooldownRemaining = this.throwCooldown;
+        loadResources();
     }
 
     public void throwProjectile(List<Bloon> allBloons) {
@@ -46,6 +34,6 @@ public class BoomerangMonkey extends Monkey {
     }
 
     public Monkey ofSameType() {
-        return new DartMonkey(0, 0);
+        return new BoomerangMonkey(0, 0);
     }
 }

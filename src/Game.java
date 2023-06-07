@@ -1,9 +1,11 @@
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -30,6 +32,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.border.Border;
 
 import levi.bloon.Bloon;
 import levi.monkey.Monkey;
@@ -47,15 +50,17 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
     public static final int PREF_H = (int) (1080 / scale);
     public static Game game;
 
-    private static Point2D[] curRoute = Geometry.route1;
+    public static Point2D[] curRoute = Geometry.route1;
     private Point2D mouseLoc;
 
     // gameplay control
-    private Wave wave1;
-    private Wave currentWave;
+    public String[] waves;
+    public int waveNum = -1;
+    public Wave currentWave;
     private List<Monkey> monkeys;
-    private int money = 2000000000;
     private int health = 200;
+    public int money = 200;
+    public int deltaTime = 1;
 
     // for placing monkeys
     public Monkey monkeyToPlace;
@@ -69,27 +74,69 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
     private InfoBar infoBar;
     private ShopBar shopBar;
 
-    private void timerFunction() {
-        repaint();
+    // toasts control
+    private int toReward = 0;
+    private int toastTimeRemaining = 0;
+    private String toastMessage = "";
 
+    public void toast(String toast) {
+        int frames = 250;
+        toastTimeRemaining = frames;
+        toastMessage = toast.replaceAll("_", " ");
+    }
+
+    public void setReward(int reward) {
+        toReward = reward;
+    }
+
+    public void loadNextWave() {
+
+        waveNum++;
+        if (waveNum >= waves.length) {
+            JOptionPane.showMessageDialog(this, "You win!");
+        }
+        currentWave = new Wave(waves[waveNum]);
+        deltaTime = 1;
+    }
+
+    public boolean inBetweenWaves() {
+        return waveNum == -1 || currentWave.getBloonsRemaining() == 0;
+    }
+
+    private void betweenWaveTimerFunction() {
+        repaint();
+        for(Monkey monkey : monkeys) 
+            for (Projectile projectile : monkey.projectiles) 
+                projectile.move(currentWave.bloons);
+    }
+
+    private void duringWaveTimerFunction() {
+        repaint();
         for (Monkey monkey : monkeys) {
             monkey.throwProjectile(currentWave.bloons);
             // for every projectile
             for (int i = 0; i < monkey.projectiles.size(); i++) {
                 Projectile projectile = monkey.projectiles.get(i);
                 projectile.move(currentWave.bloons);
+                this.currentWave.bloons.addAll(projectile.managePopping(currentWave.bloons));
                 if (projectile.isDone || projectile.popsRemaining == 0) {
                     monkey.slowPopCount += projectile.popCount;
                     monkey.projectiles.remove(projectile);
+                    money += projectile.popCount;
+                    i--;
                 }
             }
         }
-
+        // if there are no more bloons, give reward
+        if (currentWave.getBloonsRemaining() == 0) {
+            money += toReward;
+            toReward = 0;
+        }
         for (int i = 0; i < currentWave.getBloonsRemaining(); i++) {
             Bloon bloon = currentWave.bloons.get(i);
 
             // if hp is 0 or if it has travelled the entire path
-            if (bloon.hp <= 0) {
+            if (bloon.hp < 0) {
                 currentWave.bloons.remove(bloon);
             }
             if (bloon.distTravelled >= Geometry.pathDistance(curRoute)) {
@@ -99,25 +146,32 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
 
             bloon.travel(curRoute, bloon.bloonInfo.speed);
         }
+
         currentSidePanel.repaint();
     }
 
     private Timer timer = new Timer(1000 / 30, e -> {
-        timerFunction();
+        // if in between waves:
+        if (waveNum == -1 || currentWave.getBloonsRemaining() == 0)  {
+            betweenWaveTimerFunction();
+        } else {
+            duringWaveTimerFunction();
+            duringWaveTimerFunction();
+            duringWaveTimerFunction();
+        }
     });
 
     private void loadWaves(String loc) {
         File waveLocation = new File(loc);
         String content = "";
+
         try {
             content = Files.readString(Path.of(waveLocation.getAbsolutePath()));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        String[] waves = content.split("END");
-        wave1 = new Wave(waves[0], curRoute[0]);
-        currentWave = wave1;
+        waves = content.split("END");
     }
 
     public void setNonFocusable(Container container) {
@@ -150,7 +204,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         this.currentSidePanel.setPreferredSize(new Dimension(200, PREF_H));
         this.currentSidePanel.setLayout(new BorderLayout());
         this.currentSidePanel.add(shopBar, BorderLayout.NORTH);
-        setNonFocusable(currentSidePanel);
+        setNonFocusable(this.currentSidePanel);
         this.add(currentSidePanel, BorderLayout.EAST);
 
         timer.start();
@@ -161,20 +215,20 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.drawImage(bg, 0, 0, this);
+        g2.setStroke(new BasicStroke(3));
+        g2.setFont(new Font("Arial", Font.PLAIN, 20));
 
         if (selectedMonkey != null) {
             infoBar.populateInfo(selectedMonkey);
         }
 
         // draw bloons (ignore the variables)
-        for (Bloon bloon : currentWave.bloons) {
-            g2.drawImage(bloon.getImage(), (int) bloon.getX() - bloon.getImage().getWidth(this) / 2,
-                    (int) bloon.getY() - bloon.getImage().getHeight(this) / 2, this);
-            // circle of bloon size
-            g2.setColor(Color.RED);
-            g2.drawOval((int) bloon.getX() - bloon.getSize() / 2,
-                    (int) bloon.getY() - bloon.getSize() / 2, bloon.getSize(), bloon.getSize());
-        }
+        if (!this.inBetweenWaves())
+            for (Bloon bloon : currentWave.bloons) {
+                g2.drawImage(bloon.getImage(), (int) bloon.getX() - bloon.getImage().getWidth(this) / 2,
+                        (int) bloon.getY() - bloon.getImage().getHeight(this) / 2, this);
+                g2.drawString(bloon.hp + "", (int) bloon.getX(), (int) bloon.getY());
+            }
 
         for (Monkey monkey : monkeys) {
             monkey.draw(g2);
@@ -189,7 +243,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
 
             // draw range
             g2.setColor(new Color(255, 0, 0, 50));
-            if (monkeyCanBePlaced) 
+            if (monkeyCanBePlaced)
                 g2.setColor(new Color(0, 255, 0, 50));
             g2.fillOval((int) (mouseLoc.getX() - monkeyToPlace.range), (int) (mouseLoc.getY() - monkeyToPlace.range),
                     (int) (monkeyToPlace.range * 2), (int) (monkeyToPlace.range * 2));
@@ -210,7 +264,31 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         g2.drawString("HP: " + health, 10, PREF_H - 10);
         g2.drawString("$M: " + money, 10, PREF_H - 30);
 
-        if(debug) {
+        // set transparency of everything to 50
+
+        if(toReward > 0 && toastTimeRemaining >= -20) {
+            toastTimeRemaining --;
+            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
+            AlphaComposite normal = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f);
+            g2.setComposite(ac);
+            // draw round rect in the center of the screen
+            int mapw = PREF_W - shopBar.getWidth();
+            int toastw = 600;
+            int yoffset = toastTimeRemaining >= 0 ? 0 : (int) Math.pow(-toastTimeRemaining, 3); 
+            g2.fillRoundRect(mapw / 2 - toastw / 2, PREF_H - 175 + yoffset, toastw, 100, 10, 10);
+            g2.setComposite(normal);
+            g2.setColor(Color.WHITE);
+            g2.drawRoundRect(mapw / 2 - toastw / 2, PREF_H - 175 + yoffset, toastw, 100, 10, 10);
+            
+            // get the text
+            String text = toastMessage;
+            // split into lines of 50 chars
+            String[] lines = text.split("(?<=\\G.{50})");
+            for(int i = 0; i < lines.length; i++) {
+                g2.drawString(lines[i], mapw / 2 - toastw / 2 + 10, PREF_H - 150 + yoffset + i * 20);
+            }
+        }
+        if (debug) {
             g2.drawString("modKeyShift: " + modKeyShift, 10, 10);
             Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
             g2.drawString("Focus owner: " + focusOwner, 10, 30);
@@ -230,11 +308,12 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
         return monkeyToPlace.price <= money && !intersectsPath && !intersectsMonkey;
     }
 
-    @Override public void mouseMoved(MouseEvent e) {
+    @Override
+    public void mouseMoved(MouseEvent e) {
         mouseLoc = e.getPoint();
         // set can place to whether or not the monkey is intersecting the path
         if (monkeyToPlace != null) {
-            if(monkeyToPlace.price > money) {
+            if (monkeyToPlace.price > money) {
                 monkeyCanBePlaced = false;
                 monkeyToPlace = null;
             } else {
@@ -246,55 +325,61 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
     }
 
     public void handleLeftClick(MouseEvent e) {
-        // place monkey
+
+        // if there was a correct interaction
         if (monkeyToPlace != null && canPlaceMonkey() && money >= monkeyToPlace.price) {
-            monkeyToPlace.pos = e.getPoint();
+            // register the purchase
             money -= monkeyToPlace.price;
             monkeys.add(monkeyToPlace);
-            monkeyToPlace = monkeyToPlace.ofSameType();
-            if (!modKeyShift) {
-                monkeyToPlace = null;
-            }
+            monkeyToPlace.pos = e.getPoint();
+
+            monkeyToPlace = modKeyShift ? monkeyToPlace.ofSameType() : null;
         } else if (monkeyToPlace == null) {
             // interact with monkeys
+
             for (Monkey monkey : monkeys) {
                 if (monkey.pos.distance(e.getPoint()) < monkey.imageSize()) {
                     selectedMonkey = monkey;
                     currentSidePanel.removeAll();
-                    currentSidePanel.add(infoBar);
+                    currentSidePanel.add(infoBar, BorderLayout.NORTH);
                     infoBar.populateInfo(monkey);
                     break;
                 }
             }
         }
-        // deselection
+
+        // if no interaction occurs, deselect monkey
         if (selectedMonkey != null && selectedMonkey.pos.distance(e.getPoint()) > selectedMonkey.imageSize()) {
             selectedMonkey = null;
             currentSidePanel.removeAll();
-            currentSidePanel.add(shopBar);
+            currentSidePanel.add(shopBar, BorderLayout.NORTH);
         }
     }
 
-    @Override public void mousePressed(MouseEvent e) {
+    @Override
+    public void mousePressed(MouseEvent e) {
         int button = e.getButton();
         if (button == MouseEvent.BUTTON1) {
             handleLeftClick(e);
         }
     }
 
-    @Override public void keyPressed(KeyEvent e) {
+    @Override
+    public void keyPressed(KeyEvent e) {
         int c = e.getKeyCode();
         // if pressed esc, stop placing monkey
         if (c == KeyEvent.VK_ESCAPE) {
             monkeyToPlace = null;
             selectedMonkey = null;
-            currentSidePanel = shopBar;
+            currentSidePanel.removeAll();
+            currentSidePanel.add(shopBar, BorderLayout.NORTH);
         } else if (c == KeyEvent.VK_SHIFT) {
             modKeyShift = true;
         }
     }
 
-    @Override public void keyReleased(KeyEvent e) {
+    @Override
+    public void keyReleased(KeyEvent e) {
         int c = e.getKeyCode();
         if (c == KeyEvent.VK_SHIFT) {
             modKeyShift = false;
@@ -336,19 +421,30 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
             }
         });
 
-
     }
 
-    @Override public void keyTyped(KeyEvent e) {}
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
 
-    @Override public void mouseReleased(MouseEvent e) {}
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
 
-    @Override public void mouseDragged(MouseEvent e) {}
+    @Override
+    public void mouseDragged(MouseEvent e) {
+    }
 
-    @Override public void mouseClicked(MouseEvent e) {}
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
 
-    @Override public void mouseEntered(MouseEvent e) {}
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
 
-    @Override public void mouseExited(MouseEvent e) {}
+    @Override
+    public void mouseExited(MouseEvent e) {
+    }
 
 }

@@ -11,11 +11,13 @@ import java.util.List;
 import levi.bloon.Bloon;
 import levi.projectile.Boomerang;
 import levi.projectile.Projectile;
+import levi.util.Resources;
 import levi.util.Tuple;
 
 public class Monkey {
 
     public Point2D pos;
+    public String resourceIdentifier;
 
     // stats
     public int throwSpeed, throwCooldown; // speed of a proj, throw frequency
@@ -46,6 +48,24 @@ public class Monkey {
         this.slowPopCount = 0;
     }
 
+    public void loadResources() {
+        Resources resources = new Resources();
+        
+        resources.cd("monkeys." + this.resourceIdentifier + ".stats.default");
+        this.throwSpeed = resources.getInt("throwSpeed");
+        this.throwCooldown = resources.getInt("throwCooldown");
+        this.throwCount = resources.getInt("throwCount");
+        this.throwPierce = resources.getInt("throwPierce");
+        this.throwDamage = resources.getInt("throwDamage");
+        this.range = resources.getInt("range");
+        this.price = resources.getInt("price");
+        
+        resources.cd("monkeys." + this.resourceIdentifier + ".images");
+        this.img = resources.getImg("placedico");
+        
+        this.throwCooldownRemaining = this.throwCooldown;
+    }
+
     public Tuple<List<Bloon>, List<Float>> bloonsInRange(List<Bloon> allBloons) {
         List<Bloon> inRange = new ArrayList<Bloon>();
         List<Float> distances = new ArrayList<Float>();
@@ -54,7 +74,7 @@ public class Monkey {
             double dx = Math.pow(bloon.getX() - getX(), 2);
             double dy = Math.pow(bloon.getY() - getY(), 2);
             double dist = Math.sqrt(dx + dy);
-            if (dist <= range) {
+            if (dist <= range && bloon.distTravelled >= 100) {
                 inRange.add(bloon);
                 distances.add((float) dist);
                 bloon.detected = true;

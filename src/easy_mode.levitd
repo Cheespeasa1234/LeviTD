@@ -1,6 +1,60 @@
-# spawn 20 reds;
-B 7 200 100;
-W 15;
-B 6 200 100;
+# wave 1;
+M Welcome_to_LeviTD!_I_hope_you_enjoy_your_stay. 100;
+B 0 20 100;
 END
-B 1 30 100;
+
+# wave 2;
+M _ 120;
+B 0 30 100;
+END
+
+# wave 3;
+M _ 175;
+B 0 30 100;
+W 100;
+B 1 5 100;
+END
+
+# wave 4;
+M _ 200;
+B 0 25 100;
+W 200;
+B 1 15 100;
+END
+
+# wave 5;
+M Soon,_you_will_encounter_your_first_green_bloon._Get_familiar_with_it,_you'll_be_popping_a_lot_of_them. 120;
+B 2 3 100;
+W 300;
+B 1 20 100;
+END
+
+# wave 6;
+M Just_a_little_taste_of_what_is_to_come. 180;
+W .;
+B 0 10 100;
+B 1 10 100;
+B 2 10 100;
+W .;
+W 300;
+W 2 1 100;
+END
+
+# wave 7;
+M _ 200;
+W .;
+B 0 10 100;
+B 1 20 100;
+W .;
+B 2 5 160;
+B 2 10 100;
+END
+
+# wave 8;
+M I_hope_you_are_ready_for_some_more_greens._I_warned_you! 200;
+W .;
+B 2 10 100;
+B 2 10 75;
+B 2 20 50;
+W .;
+END

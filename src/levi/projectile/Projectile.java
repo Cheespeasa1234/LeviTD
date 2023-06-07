@@ -50,17 +50,23 @@ public class Projectile {
         double newX = this.pos.getX() + this.movementVector.getX();
         double newY = this.pos.getY() + this.movementVector.getY();
         this.pos.setLocation(newX, newY);
-        
+    }
+
+    // @return list of bloons to spawn because of popping
+    public List<Bloon> managePopping(List<Bloon> bloons) {
+        List<Bloon> newBloons = new ArrayList<Bloon>();
         for(Bloon bloon : bloons) {
             // if distance to bloon is less than size
             if(touched.indexOf(bloon) < 0 && this.pos.distance(bloon.loc) < bloon.getSize()) {
                 int prevHP = bloon.hp;
-                bloon.dealDamage(this.popDamage);
+                newBloons.addAll(bloon.dealDamage(this.popDamage));
                 touched.add(bloon);
                 this.popCount += prevHP - bloon.hp;
                 this.popsRemaining--;
             }
             if(popsRemaining == 0) break;
         }
+        touched.addAll(newBloons);
+        return newBloons;
     }
 }

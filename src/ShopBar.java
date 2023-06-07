@@ -1,6 +1,11 @@
 
+import java.awt.Button;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.List;
+import java.util.Arrays;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,40 +29,39 @@ public class ShopBar extends JPanel {
         JPanel monkeyPicker = new JPanel();
         monkeyPicker.setLayout(new GridLayout(0, 2));
 
-        // add dart monkey to the picker
-        JButton dartMonkey = new JButton();
-        dartMonkey.setText("M" + Resources.intResources.get("monkey.dart.stats.default.price"));
-        dartMonkey.setIcon(new ImageIcon(Resources.imageResources.get("monkeys.dart.images.placedico")));
-        dartMonkey.addActionListener(e -> { Game.game.monkeyToPlace = new DartMonkey(0, 0); });
-        monkeyPicker.add(dartMonkey);
-
-        // add super monkey to the picker
-        JButton superMonkey = new JButton();
-        superMonkey.setText("M" + Resources.intResources.get("monkey.super.stats.default.price"));
-        superMonkey.setIcon(new ImageIcon(Resources.imageResources.get("monkeys.super.images.placedico")));
-        superMonkey.addActionListener(e -> { Game.game.monkeyToPlace = new SuperMonkey(0, 0); });
-        monkeyPicker.add(superMonkey);
-
-        // add boomerang monkey to the picker
-        JButton boomerangMonkey = new JButton();
-        boomerangMonkey.setText("M" + Resources.intResources.get("monkey.boomerang.stats.default.price"));
-        boomerangMonkey.setIcon(new ImageIcon(Resources.imageResources.get("monkeys.boomerang.images.placedico")));
-        boomerangMonkey.addActionListener(e -> { Game.game.monkeyToPlace = new BoomerangMonkey(0, 0); });
-        monkeyPicker.add(boomerangMonkey);
+        Monkey[] monkeySamples = {new DartMonkey(0,0), new BoomerangMonkey(0,0), new SuperMonkey(0,0)};
+        for(Monkey monkeySample : monkeySamples) {
+            JButton button = new JButton() {
+                String path = "monkeys." + monkeySample.resourceIdentifier + ".images.displayico";
+                Image img = Resources.imageResources.get(path).getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+                public void paint(Graphics g) {
+                    super.paint(g);
+                    g.drawImage(img, 20, 0, null);
+                    g.drawString("M" + monkeySample.price, 0, img.getHeight(null) + 30);
+                }
+            };
+            
+            button.addActionListener(e -> { Game.game.monkeyToPlace = monkeySample.ofSameType(); });
+            monkeyPicker.add(button);
+        }
 
         this.add(monkeyPicker);
 
-        JPanel timeCtrls = new JPanel();
-
-        CircleButton startButton = new CircleButton("[>");
-        startButton.setForeground(Color.GREEN);
-        CircleButton pauseButton = new CircleButton("||");
-        pauseButton.setForeground(Color.BLUE);
-
-        timeCtrls.add(startButton);
-        timeCtrls.add(pauseButton);
-
-        this.add(timeCtrls);
+        JButton timeControlButton = new JButton(" GO! >> ");
+        timeControlButton.setBackground(Color.BLUE);
+        timeControlButton.addActionListener(e -> {
+            if(Game.game.inBetweenWaves()) {
+                Game.game.loadNextWave();
+                timeControlButton.setText(" > GO > ");
+            } else if(Game.game.deltaTime == 1) {
+                Game.game.deltaTime = 2;
+                timeControlButton.setText(" > 2x > ");
+            } else {
+                Game.game.deltaTime = 1;
+                timeControlButton.setText(" > 1x > ");
+            }
+        });
+        this.add(timeControlButton);
 
     }   
 }
