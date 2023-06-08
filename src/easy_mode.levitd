@@ -1,6 +1,10 @@
 # wave 1;
 M Welcome_to_LeviTD!_I_hope_you_enjoy_your_stay. 100;
-B 0 20 100;
+B 9 60 80;
+W 20;
+B 8 60 80;
+W 20;
+B 7 60 80;
 END
 
 # wave 2;

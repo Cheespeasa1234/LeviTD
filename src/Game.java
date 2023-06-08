@@ -227,7 +227,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener, 
             for (Bloon bloon : currentWave.bloons) {
                 g2.drawImage(bloon.getImage(), (int) bloon.getX() - bloon.getImage().getWidth(this) / 2,
                         (int) bloon.getY() - bloon.getImage().getHeight(this) / 2, this);
-                g2.drawString(bloon.hp + "", (int) bloon.getX(), (int) bloon.getY());
             }
 
         for (Monkey monkey : monkeys) {
