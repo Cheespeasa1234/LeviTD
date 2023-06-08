@@ -27,6 +27,9 @@ public class Monkey {
     public int slowPopCount;
     public int price;
 
+    public int path1Upgrades = 0;
+    public int path2Upgrades = 0;
+
     public Image img;
     public Point2D imgScale;
     public float lastThrownRot;
@@ -77,7 +80,7 @@ public class Monkey {
             double dx = Math.pow(bloon.getX() - getX(), 2);
             double dy = Math.pow(bloon.getY() - getY(), 2);
             double dist = Math.sqrt(dx + dy);
-            if (dist <= range && bloon.distTravelled >= 100) {
+            if (dist <= range + bloon.getSize() && bloon.distTravelled >= -10) {
                 inRange.add(bloon);
                 distances.add((float) dist);
                 bloon.detected = true;
@@ -149,14 +152,18 @@ public class Monkey {
         g2.setTransform(old);
         g2.setColor(Color.BLACK);
         
-        for (Projectile proj : this.projectiles) {
+        for (Projectile proj : this.projectiles)
             g2.fillOval((int) proj.getX() - 5, (int) proj.getY() - 5, 10, 10);
-            if(proj instanceof Boomerang) {
-                Boomerang casted = (Boomerang) proj;
-                g2.drawString(casted.boomerangTravelledRatio + "", (int) proj.getX(), (int) proj.getY() + 20);
-                g2.drawString(casted.boomerangBack + "", (int) proj.getX(), (int) proj.getY() + 40);
-            }
-        }
+        
+    }
+
+    public int getUpgradePrice(int path) {
+        int base = this.price / 2;
+        if (path == 1)
+            return base * (int) Math.pow(2, path1Upgrades);
+        else if (path == 2)
+            return base * (int) Math.pow(2, path2Upgrades);
+        else throw new IllegalArgumentException("Invalid path");
     }
 
 }

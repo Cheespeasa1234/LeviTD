@@ -25,7 +25,7 @@ public class PathMaker extends JPanel implements MouseListener, MouseMotionListe
     public static final int PREF_H = (int) (1080 / scale);
 
     public ArrayList<Point2D> points = new ArrayList<Point2D>();
-    public Image bg = new ImageIcon(PathMaker.class.getResource("../img/map1.png")).getImage().getScaledInstance(PREF_W, PREF_H, Image.SCALE_SMOOTH); 
+    
     Point2D mouseloc = new Point2D.Float(0,0);
 
     public PathMaker() {
@@ -40,7 +40,6 @@ public class PathMaker extends JPanel implements MouseListener, MouseMotionListe
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        g2.drawImage(bg, 0, 0, null);
 
         g2.drawLine((int) mouseloc.getX(), (int) mouseloc.getY(), (int) points.get(points.size()-1).getX(), (int) points.get(points.size()-1).getY());
 

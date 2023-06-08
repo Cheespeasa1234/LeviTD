@@ -8,7 +8,7 @@ import levi.bloon.Bloon;
 
 public class Boomerang extends Projectile {
     public float boomerangTravelledRatio = 0;
-    public final float maxBoomerangDist = 7;
+    public final float maxBoomerangDist = 20;
     public Point2D origin;
     public boolean boomerangBack = false;
     public Boomerang(double x, double y, Bloon target, double rotOffsetThetha, double speed, int popsRemaining, int layerPierce) {
@@ -32,18 +32,17 @@ public class Boomerang extends Projectile {
         boomerangTravelledRatio += 0.5;
 
         double rot = Math.PI / 2;
-        Point2D rotatedMovementVector = new Point2D.Double(this.movementVector.getX() * Math.cos(rot) - this.movementVector.getY() * Math.sin(rot), this.movementVector.getX() * Math.sin(rot) + this.movementVector.getY() * Math.cos(rot));
-        double m = maxBoomerangDist;
-        double sidewaysMovementRatio = Math.cos((boomerangTravelledRatio/2+m/4)*(2*Math.PI/m)) * 2;
+        // rotate the movement vector by 90 degrees, to represent sideways motion
+        Point2D rotatedMovementVector = new Point2D.Double(
+            this.movementVector.getX() * Math.cos(rot) - this.movementVector.getY() * Math.sin(rot), 
+            this.movementVector.getX() * Math.sin(rot) + this.movementVector.getY() * Math.cos(rot)
+        );
+        double sidewaysMovementRatio = 2 * Math.cos((2 * Math.PI * boomerangTravelledRatio + Math.PI * maxBoomerangDist) / (2 * maxBoomerangDist));
 
-        // move straight on movement vector
+        // move by sum of vectors
         double ratio = (Math.pow((boomerangTravelledRatio-maxBoomerangDist), 2) - Math.pow(maxBoomerangDist, 2)) / maxBoomerangDist;
-        double newX = this.origin.getX() + this.movementVector.getX() * -ratio;
-        double newY = this.origin.getY() + this.movementVector.getY() * -ratio;
-
-        // move side to side on rotated movement vector
-        newX += rotatedMovementVector.getX() * sidewaysMovementRatio;
-        newY += rotatedMovementVector.getY() * sidewaysMovementRatio;
+        double newX = this.origin.getX() + this.movementVector.getX() * -ratio + rotatedMovementVector.getX() * -sidewaysMovementRatio;
+        double newY = this.origin.getY() + this.movementVector.getY() * -ratio + rotatedMovementVector.getY() * -sidewaysMovementRatio;
         this.pos.setLocation(newX, newY);
     }
 }

@@ -71,11 +71,11 @@ public class Projectile {
         List<Bloon> newBloons = new ArrayList<Bloon>();
         for(Bloon bloon : bloons) {
             // if distance to bloon is less than size
-            if(touched.indexOf(bloon) < 0 && this.pos.distance(bloon.loc) < bloon.getSize()) {
+            if(touched.indexOf(bloon) < 0 && this.pos.distance(bloon.loc) < bloon.getSize() / 2) {
                 int prevHP = bloon.hp;
                 newBloons.addAll(bloon.dealDamage(this.popDamage));
                 touched.add(bloon);
-                this.popCount += prevHP - bloon.hp;
+                this.popCount += prevHP - Math.max(bloon.hp, 0);
                 this.popsRemaining--;
             }
             if(popsRemaining == 0) break;

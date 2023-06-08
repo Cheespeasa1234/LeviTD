@@ -30,12 +30,12 @@ public class Resources {
 
             img:bloons.yellow.imgpath:/img/bloons/BTD6Yellow.png
             str:bloons.yellow.onpop:2
-            int:bloons.yellow.speed:8
+            int:bloons.yellow.speed:7
             int:bloons.yellow.health:1
 
             img:bloons.pink.imgpath:/img/bloons/BTD6Pink.png
             str:bloons.pink.onpop:3
-            int:bloons.pink.speed:10
+            int:bloons.pink.speed:9
             int:bloons.pink.health:1
 
             img:bloons.black.imgpath:/img/bloons/BTD6Black.png
@@ -81,10 +81,9 @@ public class Resources {
             img:monkeys.tack.images.displayico:/img/monkeys/displayicon/tackShooter.png
             img:monkeys.tack.images.placedico:/img/monkeys/placeicon/tack.png
 
-            int:monkeys.dart.stats.default.price:100
-            int:monkeys.dart.stats.default.projSpeed:30
-            int:monkeys.dart.stats.default.throwSpeed:20
-            int:monkeys.dart.stats.default.throwCooldown:20
+            int:monkeys.dart.stats.default.price:120
+            int:monkeys.dart.stats.default.throwSpeed:8
+            int:monkeys.dart.stats.default.throwCooldown:35
             int:monkeys.dart.stats.default.throwCount:1
             int:monkeys.dart.stats.default.throwPierce:1
             int:monkeys.dart.stats.default.throwDamage:1
@@ -99,12 +98,12 @@ public class Resources {
             int:monkeys.super.stats.default.range:300
 
             int:monkeys.boomerang.stats.default.price:200
-            int:monkeys.boomerang.stats.default.throwSpeed:20
-            int:monkeys.boomerang.stats.default.throwCooldown:20
+            int:monkeys.boomerang.stats.default.throwSpeed:10
+            int:monkeys.boomerang.stats.default.throwCooldown:50
             int:monkeys.boomerang.stats.default.throwCount:1
-            int:monkeys.boomerang.stats.default.throwPierce:10
+            int:monkeys.boomerang.stats.default.throwPierce:3
             int:monkeys.boomerang.stats.default.throwDamage:1
-            int:monkeys.boomerang.stats.default.range:150
+            int:monkeys.boomerang.stats.default.range:140
 
             int:monkeys.tack.stats.default.price:360
             int:monkeys.tack.stats.default.throwSpeed:10

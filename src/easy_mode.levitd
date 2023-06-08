@@ -1,26 +1,22 @@
 # wave 1;
-M Welcome_to_LeviTD!_I_hope_you_enjoy_your_stay. 100;
-B 9 60 80;
-W 20;
-B 8 60 80;
-W 20;
-B 7 60 80;
+M Welcome_to_LeviTD!_I_hope_you_enjoy_your_stay. 80;
+B 2 20 60;
 END
 
 # wave 2;
 M _ 120;
-B 0 30 100;
+B 0 30 60;
 END
 
 # wave 3;
-M _ 175;
+M _ 100;
 B 0 30 100;
 W 100;
 B 1 5 100;
 END
 
 # wave 4;
-M _ 200;
+M _ 120;
 B 0 25 100;
 W 200;
 B 1 15 100;
@@ -45,7 +41,7 @@ W 2 1 100;
 END
 
 # wave 7;
-M _ 200;
+M _ 145;
 W .;
 B 0 10 100;
 B 1 20 100;
@@ -55,10 +51,27 @@ B 2 10 100;
 END
 
 # wave 8;
-M I_hope_you_are_ready_for_some_more_greens._I_warned_you! 200;
+M I_hope_you_are_ready_for_some_more_greens._I_warned_you! 150;
 W .;
 B 2 10 100;
 B 2 10 75;
 B 2 20 50;
 W .;
 END
+
+# wave 9;
+M _ 220;
+W .;
+B 2 15 50;
+W .;
+W 100;
+B 3 10 100;
+END
+
+# wave 10;
+M How'd_you_like_those_yellow_bloons?_They_go_pretty_darn_fast. 170;
+W .;
+B 3 20 100;
+B 2 10 75;
+B 1 10 50;
+B 0 10 25;

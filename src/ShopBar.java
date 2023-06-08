@@ -23,6 +23,8 @@ import levi.util.Resources;
 public class ShopBar extends JPanel {
 
     Monkey monkeyToPlacePointer;
+    public JButton[] monkeySampleButtons;
+    public Monkey[] monkeySamples = {new DartMonkey(0,0), new BoomerangMonkey(0,0), new SuperMonkey(0,0), new TackShooter(0,0)};
 
     public ShopBar() {
 
@@ -31,8 +33,9 @@ public class ShopBar extends JPanel {
         JPanel monkeyPicker = new JPanel();
         monkeyPicker.setLayout(new GridLayout(0, 2));
 
-        Monkey[] monkeySamples = {new DartMonkey(0,0), new BoomerangMonkey(0,0), new SuperMonkey(0,0), new TackShooter(0,0)};
-        for(Monkey monkeySample : monkeySamples) {
+        monkeySampleButtons = new JButton[monkeySamples.length];
+        for(int i = 0; i < monkeySamples.length; i++) {
+            Monkey monkeySample = monkeySamples[i];
             JButton button = new JButton() {
                 String path = "monkeys." + monkeySample.resourceIdentifier + ".images.displayico";
                 Image img = Resources.imageResources.get(path).getScaledInstance(65, 80, Image.SCALE_SMOOTH);
@@ -45,7 +48,7 @@ public class ShopBar extends JPanel {
                     g.drawLine(5, this.getHeight() - 35, this.getWidth() - 5, this.getHeight() - 35);
                 }
             };
-            
+            monkeySampleButtons[i] = button;
             button.addActionListener(e -> { Game.game.monkeyToPlace = monkeySample.ofSameType(); });
             monkeyPicker.add(button);
         }
@@ -55,7 +58,7 @@ public class ShopBar extends JPanel {
         JButton timeControlButton = new JButton(" GO! >> ");
         timeControlButton.setBackground(Color.BLUE);
         timeControlButton.addActionListener(e -> {
-            if(Game.game.inBetweenWaves()) {
+            if(Game.game.waveNum == -1 || Game.game.currentWave.getBloonsRemaining() == 0) {
                 Game.game.loadNextWave();
                 timeControlButton.setText(" > GO > ");
             } else if(Game.game.deltaTime == 1) {
